@@ -2,11 +2,13 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<link rel="stylesheet" href="leaflet.css" />
 	<style>
 	 	#map { height: 600px; width: 1200px; }
 	</style>
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="leaflet.js"></script>
+	<script src="leaflet-dvf.js"></script>
+	<script src="leaflet.dvf.experimental.js"></script>"<!-- Include from local directory. -->
 	<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
 </head>
@@ -20,7 +22,10 @@
 		    subdomains: ['a','b','c','d'],
 		    mapId: 'thomhurks.lifnnoec',
 		    token: 'pk.eyJ1IjoidGhvbWh1cmtzIiwiYSI6ImtENDluRmsifQ.Q4w4kAlNk0YfaRclQp4BMA',
-		    fullscreenControl: true
+		    fullscreenControl: true,
+		    detectRetina: true,
+		    reuseTiles: true,
+		    bounds: null // SET THIS IN FUTURE!
 		}).addTo(map);
 		L.control.fullscreen().addTo(map);
 		var marker = L.marker([51.5, -0.09]).addTo(map);
@@ -34,10 +39,6 @@
 		    [51.503, -0.06],
 		    [51.51, -0.047]
 		]).addTo(map);
-		//marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-		//circle.bindPopup("I am a circle.");
-		//polygon.bindPopup("I am a polygon.");
-		//var popup = L.popup();
 
 		function onMapClick(e) {
 		    popup
@@ -45,8 +46,56 @@
 		        .setContent("You clicked the map at " + e.latlng.toString())
 		        .openOn(map);
 		}
-
 		map.on('click', onMapClick);
+
+        var	a = {
+                "lon": "24",
+                "lat": "54.9",
+                "edgeweight": "5"
+            },
+            b = {
+                "lon": "24.5",
+                "lat": "55",
+                "edgeweight": "25"
+            },
+            c = {
+                "lon": "25.5",
+                "lat": "54.5",
+                "edgeweight": "50"
+            },
+            d = {
+                "lon": "26",
+                "lat": "55",
+                "edgeweight": "75"
+            };
+
+        var pathData = [a,b,c,d];
+
+        var processedData = [];
+        var minWeight = 99999;
+        var maxWeight = -99999;
+        for (var i = 0; i < pathData.length; ++i) {
+            var edge = pathData[i];
+            var latlng = new L.LatLng(edge.lat, edge.lon);
+            minWeight = edge.edgeweight < minWeight ? edge.edgeweight : minWeight;
+            maxWeight = edge.edgeweight > maxWeight ? edge.edgeweight : maxWeight;
+            latlng.weight = edge.edgeweight;
+            processedData.push(latlng);
+        }
+
+        var weightedPolylineTest = new L.WeightedPolyline(processedData, {
+            fill: true,
+            fillColor: '#0033ff',
+            fillOpacity: 0.8,
+            stroke: false,
+            dropShadow: true,
+            gradient: true,
+            weightToColor: new L.HSLHueFunction([minWeight, 60], [maxWeight, -30])
+        });
+
+        // Add the layer to the map
+        map.addLayer(weightedPolylineTest);
+
 	</script>
 </body>
 </html>
