@@ -8,7 +8,8 @@
 	</style>
 	<script src="leaflet.js"></script>
 	<script src="leaflet-dvf.js"></script>
-	<script src="leaflet.dvf.experimental.js"></script>"<!-- Include from local directory. -->
+	<script src="leaflet.dvf.experimental.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
 </head>
@@ -28,6 +29,57 @@
 		    bounds: null // SET THIS IN FUTURE!
 		}).addTo(map);
 		L.control.fullscreen().addTo(map);
+
+        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+                g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+        d3.json("paths.json", function(collection) {
+            var transform = d3.geo.transform({point: projectPoint}),
+                    path = d3.geo.path().projection(transform);
+
+            var feature = g.selectAll("path")
+                    .data(collection.features)
+                    .enter().append("path")
+                    .attr('stroke-width', function(d) { return d.properties.edgeweight; })
+                    .style("stroke-width", function(d) { return d.properties.edgeweight; })
+                    .style("stroke-linecap", "round")
+                    .style("stroke", "steelblue")
+                    .style("fill", "none");
+
+            console.log(collection.features);
+            console.log(feature);
+
+            map.on("viewreset", reset);
+            reset();
+
+            // Reposition the SVG to cover the features.
+            function reset() {
+                var bounds = path.bounds(collection),
+                    topLeft = bounds[0],
+                    bottomRight = bounds[1];
+                // Add offset because D3 is silly.
+                topLeft[0] -= 25;
+                topLeft[1] -= 25;
+                bottomRight[0] += 25;
+                bottomRight[1] += 25;
+
+                svg.attr("width", bottomRight[0] - topLeft[0])
+                    .attr("height", bottomRight[1] - topLeft[1])
+                    .style("left", topLeft[0] + "px")
+                    .style("top", topLeft[1] + "px");
+
+                g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+                feature.attr("d", path);
+            }
+
+            // Use Leaflet to implement a D3 geometric transformation.
+            function projectPoint(x, y) {
+                var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+                this.stream.point(point.x, point.y);
+            }
+        });
+
 		var marker = L.marker([51.5, -0.09]).addTo(map);
 		var circle = L.circle([51.508, -0.11], 500, {
 		    color: 'red',
@@ -39,63 +91,6 @@
 		    [51.503, -0.06],
 		    [51.51, -0.047]
 		]).addTo(map);
-
-		function onMapClick(e) {
-		    popup
-		        .setLatLng(e.latlng)
-		        .setContent("You clicked the map at " + e.latlng.toString())
-		        .openOn(map);
-		}
-		map.on('click', onMapClick);
-
-        var	a = {
-                "lon": "24",
-                "lat": "54.9",
-                "edgeweight": "5"
-            },
-            b = {
-                "lon": "24.5",
-                "lat": "55",
-                "edgeweight": "25"
-            },
-            c = {
-                "lon": "25.5",
-                "lat": "54.5",
-                "edgeweight": "50"
-            },
-            d = {
-                "lon": "26",
-                "lat": "55",
-                "edgeweight": "75"
-            };
-
-        var pathData = [a,b,c,d];
-
-        var processedData = [];
-        var minWeight = 99999;
-        var maxWeight = -99999;
-        for (var i = 0; i < pathData.length; ++i) {
-            var edge = pathData[i];
-            var latlng = new L.LatLng(edge.lat, edge.lon);
-            minWeight = edge.edgeweight < minWeight ? edge.edgeweight : minWeight;
-            maxWeight = edge.edgeweight > maxWeight ? edge.edgeweight : maxWeight;
-            latlng.weight = edge.edgeweight;
-            processedData.push(latlng);
-        }
-
-        var weightedPolylineTest = new L.WeightedPolyline(processedData, {
-            fill: true,
-            fillColor: '#0033ff',
-            fillOpacity: 0.8,
-            stroke: false,
-            dropShadow: true,
-            gradient: true,
-            weightToColor: new L.HSLHueFunction([minWeight, 60], [maxWeight, -30])
-        });
-
-        // Add the layer to the map
-        map.addLayer(weightedPolylineTest);
-
 	</script>
 </body>
 </html>
