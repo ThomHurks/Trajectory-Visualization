@@ -29,6 +29,18 @@
           [26, 55]
         ]},
       "properties": {"edgeweight": 20}
+    },
+    {
+      "type": "Feature",
+      "geometry":{
+        "type": "Polygon",
+        "coordinates": [[
+          [26, 55],
+          [26.5, 55.5],
+          [27, 55],
+          [26, 55]
+        ]]},
+      "properties": {"edgeweight": 15}
     }
   ]
 }
