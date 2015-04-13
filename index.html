@@ -51,7 +51,6 @@
                 g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         d3.json("data/paths.json", function(collection) {
-            console.log(collection);
             var transform = d3.geo.transform({point: projectPoint}),
                     path = d3.geo.path().projection(transform);
 
@@ -64,14 +63,14 @@
                     .style("stroke", "steelblue")
                     .style("fill", "none");
 
-            console.log(collection.features);
-            console.log(feature);
-
             map.on("viewreset", reset);
             reset();
 
             // Reposition the SVG to cover the features.
-            function reset() {
+            function reset(e) {
+                if (e != undefined) {
+                    console.log(e);
+                }
                 var bounds = path.bounds(collection),
                     topLeft = bounds[0],
                     bottomRight = bounds[1];
