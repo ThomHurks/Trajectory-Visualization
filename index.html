@@ -35,7 +35,8 @@
        var buttonsList = [{
            text: 'Knop voor Jeroen',
            callback: function() {
-               var albatros = new GeoData('./albatros.csv', function() {
+               console.log("Loading albatros data...");
+               var albatros = new GeoData('data/albatros.csv', function() {
                   console.log(albatros);
                });
            }
@@ -58,7 +59,7 @@
             token: 'pk.eyJ1IjoidGhvbWh1cmtzIiwiYSI6ImtENDluRmsifQ.Q4w4kAlNk0YfaRclQp4BMA',
             detectRetina: true,
             reuseTiles: true,
-            bounds: null,
+            bounds: null
 		}).addTo(map);
 
         L.Control.boxzoom({ position:'topleft' }).addTo(map);
