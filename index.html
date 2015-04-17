@@ -100,7 +100,17 @@
        map.addControl(new DebugMenu());
 
        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-           g = svg.append("g").attr("class", "leaflet-zoom-hide");
+           g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+           tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+               if (d !== undefined && d !== null) {
+                    var coordinates = d.geometry.coordinates;
+                    return "(" +
+                           Math.floor(coordinates[0][0] * 100) / 100 + ", " + Math.floor(coordinates[0][1] * 100) / 100
+                           + "<br>" +
+                           Math.floor(coordinates[1][0] * 100) / 100 + ", " + Math.floor(coordinates[1][1] * 100) / 100
+                           + ")";
+               }
+            });
 
        function display(segments) {
 
@@ -119,14 +129,6 @@
 
            var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
            var color = d3.scale.sqrt().domain(weightExtent).range(["white", "red"]);
-           var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-               var coordinates = d.geometry.coordinates;
-               return "(" +
-                       Math.floor(coordinates[0][0] * 100) / 100 + ", " + Math.floor(coordinates[0][1] * 100) / 100
-                       + "<br>" +
-                       Math.floor(coordinates[1][0] * 100) / 100 + ", " + Math.floor(coordinates[1][1] * 100) / 100
-                       + ")"
-           });
 
            var updateSelection = g.selectAll("path").data(geoJSON.features);
            var feature = updateSelection.enter().append("path")
@@ -138,6 +140,7 @@
                    .on('mouseover', tip.show)
                    .on('mouseout', tip.hide);
            updateSelection.exit().remove();
+           console.log("changed geometry");
 
            feature.call(tip);
 
@@ -152,7 +155,7 @@
            reset();
 
            // Reposition the SVG to cover the features.
-           function reset(e) {
+           function reset() {
                var newZoom = map.getZoom();
                var zoomDiff = newZoom - baseZoom;
                var scale = Math.pow(2, zoomDiff);
@@ -178,6 +181,7 @@
 
                feature.attr('stroke-width', function(d) { return Math.sqrt(d.properties.edgeweight) * scale; })
                        .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight) * scale; });
+               console.log("reset");
            }
 
            // Use Leaflet to implement a D3 geometric transformation.
