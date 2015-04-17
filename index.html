@@ -95,7 +95,7 @@
 
        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
            g = svg.append("g").attr("class", "leaflet-zoom-hide"),
-           menu = d3.select(".leaflet-top.leaflet-left").append("div")
+           menu = d3.select(".leaflet-bottom.leaflet-left").append("div")
                     .attr("id", "dev-menu")
                     .text("test test test")
                     .html('<div class="panel panel-default">\
@@ -103,7 +103,14 @@
                                 <h3 class="panel-title">Debug Menu</h3>\
                             </div>\
                             <div class="panel-body">\
-                           Debug menu content\
+                                <div class="input-group">\
+                                    <span class="input-group-addon" id="epsilon">&epsilon;</span>\
+                                    <input type="text" class="form-control" placeholder="' + EPS + '" aria-describedby="epsilon">\
+                                </div>\
+                                <div class="input-group">\
+                                    <span class="input-group-addon" id="alpha">&alpha;</span>\
+                                    <input type="text" class="form-control" placeholder="' + ALPHA * (180/Math.PI) + '" aria-describedby="alpha">\
+                                </div>\
                             </div>\
                            </div>');
 
