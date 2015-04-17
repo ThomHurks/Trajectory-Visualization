@@ -10,7 +10,7 @@
     height:25px;
     line-height: 25px !important;
 
-    background-image:url('../images/leaflet-control-boxzoom.svg');
+    background-image:url('../lib/images/leaflet-control-boxzoom.svg');
     background-repeat:no-repeat;
     background-size:21px 21px;      /* 25px image, 25px box: subtract 2px for padding on every side = 21px rendering height */
     background-position:2px 2px;
