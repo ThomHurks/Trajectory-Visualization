@@ -8,12 +8,12 @@ html, body {
 
 #map {
     height: 100%;
-
 }
 
-#menu {
-    z-index: 999;
+#dev-menu {
+    margin-top: 175px;
     height: 600px;
     width: 200px;
-    background-color: white;position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+    position: absolute;
 }

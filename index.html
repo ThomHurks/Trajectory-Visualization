@@ -34,7 +34,6 @@
 </head>
 <body>
    <div id="map"></div>
-   <div id="menu">test-test-test</div>
    <script type="text/javascript"> 
        EPS = 0.05;
        ALPHA = Math.PI*2/360*5; // 5 degrees.
@@ -95,7 +94,19 @@
        L.Control.boxzoom({ position:'topleft' }).addTo(map);
 
        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-                g = svg.append("g").attr("class", "leaflet-zoom-hide");
+           g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+           menu = d3.select(".leaflet-top.leaflet-left").append("div")
+                    .attr("id", "dev-menu")
+                    .text("test test test")
+                    .html('<div class="panel panel-default">\
+                            <div class="panel-heading">\
+                                <h3 class="panel-title">Debug Menu</h3>\
+                            </div>\
+                            <div class="panel-body">\
+                           Debug menu content\
+                            </div>\
+                           </div>');
+
 
        function display(segments) {
 
