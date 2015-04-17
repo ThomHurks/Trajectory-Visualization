@@ -50,11 +50,17 @@ function runAlgorithm(segments) {
         }
     }
 
-    for (var k in segments) {
+    var result = [];
 
+    for (var k in segments) {
+        var segment = segments[k];
+
+        if (!segment.removed) {
+            result = result.concat(segment.getSubSegments());
+        }
     }
 
-    return segments;
+    return result;
 }
 
 function sortOnLength(segments) {
