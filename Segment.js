@@ -1,7 +1,6 @@
 /**
  * Created by Helmond on 16-4-2015.
  */
-
 function Segment(p1,p2, weight)
 {
     this.weight = 1;
@@ -31,9 +30,10 @@ function Segment(p1,p2, weight)
     return(this);
 }
 
+
 Segment.prototype.updateD = function() {
     this.d = this.p2.subtract(this.p1);
-}
+};
 
 //Returns null if the lines are collinear, or partially overlap.
 //Otherwise, returns an array [t,u] such that the intersection point lies at this.getPointAt(t) or l.getPointAt(u)
@@ -135,7 +135,11 @@ Segment.prototype.projectOn = function(segment) {
     //console.log(result);
 
     return result;
-}
+};
+
+Segment.prototype.toString = function() {
+    return '<' + this.p1.toString() + '   ' + this.p2.toString() + '>';
+};
 
 Segment.prototype.toString = function() {
     return '<' + this.p1.toString() + '   ' + this.p2.toString() + '>';

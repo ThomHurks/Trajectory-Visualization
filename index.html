@@ -56,20 +56,9 @@
            }
            console.log("segments after preprocessing: ");
            console.log(segments);
-           var jeffrey = true;
-           if(jeffrey){
-               display(segments);
-           }else {
 
-               segments = [
-                   new Segment(new Vector(0, 1), new Vector(6, 1)),
-                   new Segment(new Vector(0, 0.5), new Vector(2, 0.5)),
-                   new Segment(new Vector(0, 0), new Vector(10, 0))
-               ];
-
-               segments = runAlgorithm(segments);
-               display(segments);
-           }
+           segments = runAlgorithm(segments);
+           display(segments);           
        });
 
        var buttonsList = [{
