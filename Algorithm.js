@@ -4,13 +4,15 @@ function runAlgorithm(segments) {
 
     for (var i = 0; i < segments.length - 1; i++) {
         var addedSegments = [];
+        console.log("considering base:" + segments[i]);
 
         for (var j = i + 1; j < segments.length; j++) {
             var base = segments[i];
             var segment = segments[j];
+            console.log("considering segment:" + segments[j]);
 
             if (!segment.removed && addedSegments.indexOf(segment) == -1) {
-                var intervals = segment.projectOn(base);
+                var intervals = base.projectOn(segment);
 
                 if (intervals != null) {
                     //updating base interval tree
@@ -23,6 +25,7 @@ function runAlgorithm(segments) {
                     var insertedSegment;
 
                     if (segmentInterval.start != 0) {
+                        console.log('left sticking out');
                         insertedSegment = insertSegment(segments, new Segment(
                             segment.p1,
                             base.getPointAt(baseInterval.start)
@@ -30,6 +33,7 @@ function runAlgorithm(segments) {
                         addedSegments.push(insertedSegment);
                     }
                     else if (segmentInterval.end != 1) {
+                        console.log('right sticking out');
                         insertedSegment = insertSegment(segments, new Segment(
                             base.getPointAt(baseInterval.end),
                             segment.p2
@@ -41,6 +45,7 @@ function runAlgorithm(segments) {
         }
     }
 
+    console.log(segments);
     return segments;
 }
 

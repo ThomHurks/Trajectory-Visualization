@@ -20,6 +20,7 @@ function Segment(p1,p2)
     this.length = this.d.length();
 
     this.intervalTree = new IntervalTree();
+    this.removed = false;
 
     return(this);
 }
