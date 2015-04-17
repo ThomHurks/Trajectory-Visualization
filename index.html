@@ -51,6 +51,11 @@
            }
 
            display(collection);
+
+           var s1 = new Segment(new Vector(0, 0), new Vector(0,2));
+           var s2 = new Segment(new Vector(-2, 2), new Vector(0,2));
+
+           s1.projectOn(s2);
        })
 
        var buttonsList = [{

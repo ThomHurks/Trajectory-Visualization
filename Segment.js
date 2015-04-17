@@ -69,9 +69,38 @@ Segment.prototype.sideOf = function(p){
 
 Segment.prototype.projectOn = function(segment) {
 
-    /*
-    determines if the given segment can be projected on this segment with epsilon closeness and if so, retuns
-    the two floats that describe the epsilon close interval on this segment. otherwise return null.
-    */
+    var s1 = new Segment(this.p1, this.p2);
+    var s2 = new Segment(segment.p1, segment.p2);
 
+    console.log(s1.toString());
+    console.log(s2.toString());
+    console.log('-------');
+
+    // translate so s1.p1 is on origin
+    s1.p2 = s1.p2.subtract(s1.p1);
+    s2.p1 = s2.p1.subtract(s1.p1);
+    s2.p2 = s2.p2.subtract(s1.p1);
+    s1.p1 = s1.p1.subtract(s1.p1);
+
+    console.log(s1.toString());
+    console.log(s2.toString());
+    console.log('-------');
+
+    var angle = Math.atan(s1.p2.y/s1.p2.x);
+
+    // s1 is now on the positive x-axis
+    s1.p2.x = s1.p2.length();
+    s1.p2.y = 0;
+
+    // rotates s2
+    s2.p1 = s2.p1.rotate(-angle);
+    s2.p2 = s2.p2.rotate(-angle);
+
+    console.log(s1.toString());
+    console.log(s2.toString());
+    console.log('-------');
+}
+
+Segment.prototype.toString = function() {
+    return '<' + this.p1.toString() + '   ' + this.p2.toString() + '>';
 }
