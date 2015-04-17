@@ -27,12 +27,22 @@ var DebugMenu = L.Control.extend({
                                     <span class="input-group-addon">&alpha;</span>\
                                     <input type="text" class="form-control" id="alpha" placeholder="' + ALPHA * (180/Math.PI) + '" aria-describedby="alpha">\
                                 </div>\
-                            </div>\
+                                <div class="input-group">\
+                                    <span class="input-group-addon">\
+                                        <input type="checkbox" id="equalize" aria-label="equalize-label">\
+                                        <label id="equalize-label" for="equalize">Equalize</label>\
+                                    </span>\
+                                </div>\
+                                <div class="btn-group" role="group" aria-label="...">\
+                                    <button type="button" id="recalculate" class="btn btn-default">Recalculate</button>\
+                                </div>\
                            </div>');
 
         var epsilon = devMenu.select("#epsilon");
         var epsilon_sim = devMenu.select("#epsilon_sim");
         var alpha = devMenu.select("#alpha");
+        var equalize = devMenu.select("#equalize");
+        var recalculate = devMenu.select("#recalculate");
 
         epsilon.on("change", function () {
             var newVal = +this.value;
@@ -56,6 +66,22 @@ var DebugMenu = L.Control.extend({
                 ALPHA = newVal;
                 console.log("ALPHA set to " + ALPHA.toString());
             }
+        });
+
+        equalize.on("change", function () {
+            var newVal = this.value;
+            console.log(this.value);
+            if (newVal) { // newVal is truthy
+                EQUALIZE = true;
+            }
+            else { // newVal is falsy
+                EQUALIZE = false;
+            }
+            console.log("EQUALIZE set to " + EQUALIZE.toString());
+        }).property("value", EQUALIZE);
+
+        recalculate.on("click", function () {
+            console.log("Recalculate clicked");
         });
 
         return container;
