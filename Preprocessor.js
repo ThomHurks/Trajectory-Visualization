@@ -6,6 +6,7 @@ function preProcess(geodata,epsilon,alpha)
 {
     var trajectories = [];
     var origsegs = 0;
+
     for (var k in geodata.trajectories) {
         var traj = geodata.trajectories[k];
         var ct = [];
@@ -18,8 +19,10 @@ function preProcess(geodata,epsilon,alpha)
         trajectories.push(ct);
         origsegs+= ct.length;
     }
+
     var simplified = [];
     var newsegs = 0;
+
     for(var i = 0; i < trajectories.length;i++)
     {
         var simp = simplify(trajectories[i],epsilon,alpha)
@@ -27,7 +30,7 @@ function preProcess(geodata,epsilon,alpha)
         newsegs +=simp.length;
     }
     console.log("Simplified from " + origsegs + " to " + newsegs + " segments");
-     return simplified;
+    return simplified;
 
 
 
