@@ -34,21 +34,28 @@ var DebugMenu = L.Control.extend({
         var epsilon_sim = devMenu.select("#epsilon_sim");
         var alpha = devMenu.select("#alpha");
 
-        console.log(epsilon);
-
         epsilon.on("change", function () {
-            EPS = this.value;
-            console.log("EPS set to " + EPS.toString());
+            var newVal = +this.value;
+            if (isFinite(newVal)) {
+                EPS = newVal;
+                console.log("EPS set to " + EPS.toString());
+            }
         });
 
         epsilon_sim.on("change", function () {
-            EPS_S = this.value;
-            console.log("EPS_S set to " + EPS_S.toString());
+            var newVal = +this.value;
+            if (isFinite(newVal)) {
+                EPS_S = newVal;
+                console.log("EPS_S set to " + EPS_S.toString());
+            }
         });
 
         alpha.on("change", function () {
-            ALPHA = this.value;
-            console.log("ALPHA set to " + ALPHA.toString());
+            var newVal = (Math.PI / 180) * +this.value;
+            if (isFinite(newVal)) {
+                ALPHA = newVal;
+                console.log("ALPHA set to " + ALPHA.toString());
+            }
         });
 
         return container;
