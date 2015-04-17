@@ -113,7 +113,7 @@
            }
 
            var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
-           var color = d3.scale.linear().domain(weightExtent).range(["white", "red"]);
+           var color = d3.scale.sqrt().domain(weightExtent).range(["white", "red"]);
 
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
