@@ -118,8 +118,8 @@
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
                    .enter().append("path")
-                   .attr('stroke-width', function(d) { return d.properties.edgeweight; })
-                   .style("stroke-width", function(d) { return d.properties.edgeweight; })
+                   .attr('stroke-width', function(d) { return Math.sqrt(d.properties.edgeweight); })
+                   .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight); })
                    .style("stroke-linecap", "round")
                    .style("stroke", function(d) { return color(d.properties.edgeweight); })
                    .style("fill", "none");
@@ -157,8 +157,8 @@
 
                feature.attr("d", path);
 
-               feature.attr('stroke-width', function(d) { return d.properties.edgeweight * scale; })
-                       .style("stroke-width", function(d) { return d.properties.edgeweight * scale; });
+               feature.attr('stroke-width', function(d) { return Math.sqrt(d.properties.edgeweight) * scale; })
+                       .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight) * scale; });
            }
 
            // Use Leaflet to implement a D3 geometric transformation.
