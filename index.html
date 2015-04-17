@@ -37,9 +37,8 @@
    <div id="menu">test-test-test</div>
    <script type="text/javascript"> 
        EPS = 0.05;
-       ALPHA = Math.PI*2/360*5;//5 degrees
-       EQUALIZE = false;//makes all segments < 2*epsilon length by linear interpolation.
-
+       ALPHA = Math.PI*2/360*5; // 5 degrees.
+       EQUALIZE = false; // Makes all segments < 2 * epsilon length by linear interpolation.
 
        var albatros = new GeoData('./data/albatros.csv', function() {
            var trajectories = preProcess(albatros, EPS, ALPHA, EQUALIZE);
@@ -100,11 +99,11 @@
 
        function display(segments) {
 
-           //convert to GeoJSON
+           // Convert to GeoJSON.
            var geoJSON = new GeoJSON();
            geoJSON.addSegments(segments);
 
-           //Display it
+           // Display it.
            var transform = d3.geo.transform({point: projectPoint}),
                    path = d3.geo.path().projection(transform);
 
