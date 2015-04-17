@@ -4,9 +4,22 @@
 
 function Line(p1,p2)
 {
-    this.p1 = p1;
-    this.p2 = p2;
+    this.p1;
+    this.p2;
+
+    if (p1.x < p2.x) {
+        this.p1 = p1;
+        this.p2 = p2;
+    } else {
+        this.p1 = p2;
+        this.p2 = p1;
+    }
+
     this.d = p2.subtract(p1);
+
+    this.pre = null;
+    this.suc = null;
+
     return(this);
 }
 
