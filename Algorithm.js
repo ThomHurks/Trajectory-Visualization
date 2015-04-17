@@ -9,15 +9,15 @@ function runAlgorithm(segments) {
         var base = segments[i];
         if (!base.removed) {
 
-            console.log("considering base:" + segments[i]);
+            //console.log("considering base:" + segments[i]);
             for (var j = i + 1; j < segments.length; j++) {
 
-                console.log(j);
+                //console.log(j);
                 var segment = segments[j];
                 if (!segment.removed && addedSegments.indexOf(segment) == -1) {
 
                     var intervals = base.projectOn(segment);
-                    console.log("considering segment:" + segments[j]);
+                    //console.log("considering segment:" + segments[j]);
 
                     if (intervals.baseInterval != null && intervals.segmentInterval != null) {
                         //updating base interval tree
@@ -31,18 +31,18 @@ function runAlgorithm(segments) {
 
                         //possibly inserting new segments. note that these segments are always inserted in a later part of @code{segments}.
                         if (segmentInterval.start != 0) {
-                            console.log('left sticking out');
+                            //console.log('left sticking out');
                             newSegment = new Segment(segment.p1, base.getPointAt(baseInterval.start));
                             insertSegment(segments, newSegment);
                             addedSegments.push(newSegment);
-                            console.log("added segment:" + newSegment);
+                            //console.log("added segment:" + newSegment);
                         }
                         else if (segmentInterval.end != 1) {
-                            console.log('right sticking out');
+                            //console.log('right sticking out');
                             newSegment = new Segment(base.getPointAt(baseInterval.end), segment.p2);
                             insertSegment(segments, newSegment);
                             addedSegments.push(newSegment);
-                            console.log("added segment:" + newSegment);
+                            //console.log("added segment:" + newSegment);
                         }
                     }
                 }
@@ -53,7 +53,7 @@ function runAlgorithm(segments) {
     var result = [];
 
 
-    console.log(segments);
+    //console.log(segments);
     for (var k in segments) {
         var s = segments[k];
 
@@ -62,7 +62,7 @@ function runAlgorithm(segments) {
         }
     }
 
-    console.log(result);
+    //console.log(result);
     return result;
 }
 
