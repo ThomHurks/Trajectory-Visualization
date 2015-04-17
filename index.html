@@ -27,6 +27,7 @@
     <script src="Vector.js"></script>
     <script src="IntervalTree.js"></script>
     <script src="Interval.js"></script>
+    <script src="Preprocessor.js"></script>
 	<script src="lib/leaflet-dvf.js"></script>
 	<script src="lib/leaflet.dvf.experimental.js"></script>
     <script type='text/javascript' src="lib/leaflet.restoreview.js"></script>
@@ -42,18 +43,9 @@
        var albatros = new GeoData('./data/albatros.csv', function() {
            console.log(albatros);
 
-           var segments = [];
+           var segments = preProcess(albatros);
 
-           for (var k in albatros.trajectories) {
-               var traj = albatros.trajectories[k];
 
-               for (var i = 0; i < traj.length - 1; i++) {
-                   var a = traj[i];
-                   var b = traj[i+1];
-
-                   segments.push(new Segment(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
-               }
-           }
 
            segments = [
                new Segment(new Vector(0, 1), new Vector(5, 1)),
