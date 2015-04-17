@@ -19,7 +19,7 @@ GeoJSON.prototype.addSegment = function(segment) {
                 [segment.p1.x, segment.p1.y],
                 [segment.p2.x, segment.p2.y]
             ]},
-        "properties": {"edgeweight": 5}
+        "properties": {"edgeweight": segment.weight}
     };
 
     this.features.push(feature);
