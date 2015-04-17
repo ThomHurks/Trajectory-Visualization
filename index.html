@@ -42,9 +42,9 @@
 
        var albatros = new GeoData('./data/albatros.csv', function() {
            console.log(albatros);
-
+            var epsilon = 0.05;
            var alpha = Math.PI*2/360*5;//5 degrees
-           var trajectories = preProcess(albatros,EPS,alpha);
+           var trajectories = preProcess(albatros,epsilon,alpha);
            var segments = [];
            for(var i =0; i < trajectories.length;i++)
            {

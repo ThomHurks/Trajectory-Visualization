@@ -66,15 +66,16 @@ function preProcess(geodata,epsilon,alpha)
 
         function simplify2(trajectory, alpha){//straightens out any slight curves. all bends are more than alpha after this algorithm
             var simplified = [];
-            var d1 = trajectory[0].d.normalize();
             var s1 = trajectory[0];
+            var d1 = trajectory[0].d.normalize();
             for(var i = 1; i < trajectory.length;i++)
             {
                 var s2 = trajectory[i];
-                var d2 = trajectory[i].d.normalize();
+                var d2 = s2.d.normalize();
                 var dot = Vector.prototype.dot(d1,d2);
                 var angle = Math.acos(dot);
-                if(angle>alpha)
+
+                if(angle>=alpha)
                 {
                     var nseg = new Segment(s1.p1,s2.p1);
                     s1 = s2;
