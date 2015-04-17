@@ -109,13 +109,16 @@
                map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
            }
 
+           var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
+           var color = d3.scale.linear().domain(weightExtent).range(["white", "red"]);
+
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
                    .enter().append("path")
                    .attr('stroke-width', function(d) { return d.properties.edgeweight; })
                    .style("stroke-width", function(d) { return d.properties.edgeweight; })
                    .style("stroke-linecap", "round")
-                   .style("stroke", "steelblue")
+                   .style("stroke", function(d) { return color(d.properties.edgeweight); })
                    .style("fill", "none");
 
            // This is the zoomlevel at which the edgeweight variable corresponds 1-to-1 with screen pixel units.
@@ -162,23 +165,6 @@
            }
        }
 
-        /*
-       d3.json("data/paths.json", function(geoJSON) {
-           display(geoJSON);
-       });
-        */
-
-		var marker = L.marker([51.5, -0.09]).addTo(map);
-		var circle = L.circle([51.508, -0.11], 500, {
-		    color: 'red',
-		    fillColor: '#f03',
-		    fillOpacity: 0.5
-		}).addTo(map);
-		var polygon = L.polygon([
-		    [51.509, -0.08],
-		    [51.503, -0.06],
-		    [51.51, -0.047]
-		]).addTo(map);
 	</script>
 </body>
 </html>

@@ -2,9 +2,10 @@
  * Created by s113958 on 9-4-15.
  */
 function GeoData(path, done) {
-    var values = ['event-id', 'timestamp', 'location-lat', 'location-long', 'tag-local-identifier'];
-
-    var map = this;
+    "use strict";
+    var values = ['event-id', 'timestamp', 'location-lat', 'location-long', 'tag-local-identifier'],
+        map = this,
+        dateTimeFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L");
     map.path = path;
     map.line_separator = '\n';
     map.word_separator = ',';
@@ -12,24 +13,6 @@ function GeoData(path, done) {
     map.value_names = [];
     map.items = {};
     map.trajectories = {};
-
-    function stringToMillis(string) {
-        var date = new Date(0);
-
-        var split = string.split(' ');
-        var dates = split[0].split('-');
-        var time = split[1].split(':');
-
-        date.setYear(dates[0]);
-        date.setMonth(dates[1]-1);
-        date.setDate(dates[2]);
-
-        date.setHours(time[0]);
-        date.setMinutes(time[1]);
-        date.setSeconds(time[2]);
-
-        return date.getTime();
-    }
 
     function keep(valueNames) {
         var keepMap = {};
@@ -89,7 +72,7 @@ function GeoData(path, done) {
             map.trajectories[item['tag-local-identifier']].push(item);
 
             try {
-                item.timestamp = stringToMillis(item.timestamp);
+                item.timestamp = dateTimeFormat.parse(item.timestamp).getTime();
             } catch(err) {
                 console.log(item);
             }
