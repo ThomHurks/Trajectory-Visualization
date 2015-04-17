@@ -17,7 +17,7 @@ IntervalTree.prototype.addInterval = function(interval) {
         }
     }
 
-    console.log(interval);
+    console.log(interval.clone());
     console.log(indexLeft);
     console.log(indexRight);
 
@@ -52,8 +52,17 @@ IntervalTree.prototype.addInterval = function(interval) {
         }
     }
 
-    console.log(this.intervals);
+    console.log(this.clone());
 
 };
+
+IntervalTree.prototype.clone = function() {
+    var intervalsCopy = [];
+    for (var interval in this.intervals) {
+        intervalsCopy.push(this.intervals[interval].clone());
+    }
+    return intervalsCopy
+};
+
 
 

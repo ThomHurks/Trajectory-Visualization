@@ -24,3 +24,7 @@ Interval.prototype.contains = function(x, leftInclusive, rightInclusive) {
 
     return rightOfStart && leftOfEnd;
 };
+
+Interval.prototype.clone = function() {
+    return new Interval(this.start, this.end, this.weight);
+};

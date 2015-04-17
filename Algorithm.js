@@ -3,42 +3,47 @@ function runAlgorithm(segments) {
     sortOnLength(segments);
 
     for (var i = 0; i < segments.length - 1; i++) {
+
         var addedSegments = [];
-        console.log("considering base:" + segments[i]);
+        var base = segments[i];
+        if (!base.removed) {
 
-        for (var j = i + 1; j < segments.length; j++) {
-            var base = segments[i];
-            var segment = segments[j];
-            console.log("considering segment:" + segments[j]);
+            console.log("considering base:" + segments[i]);
+            for (var j = i + 1; j < segments.length; j++) {
 
-            if (!segment.removed && addedSegments.indexOf(segment) == -1) {
-                var intervals = base.projectOn(segment);
+                var segment = segments[j];
+                if (!segment.removed && addedSegments.indexOf(segment) == -1) {
 
-                if (intervals != null) {
-                    //updating base interval tree
-                    var baseInterval = intervals.baseInterval;
-                    base.intervalTree.addInterval(baseInterval);
+                    var intervals = base.projectOn(segment);
+                    console.log("considering segment:" + segments[j]);
 
-                    //removing/redirecting segments
-                    segment.removed = true;
-                    var segmentInterval = intervals.segmentInterval;
-                    var insertedSegment;
+                    if (intervals != null) {
+                        //updating base interval tree
+                        var baseInterval = intervals.baseInterval;
+                        base.intervalTree.addInterval(baseInterval);
 
-                    if (segmentInterval.start != 0) {
-                        console.log('left sticking out');
-                        insertedSegment = insertSegment(segments, new Segment(
-                            segment.p1,
-                            base.getPointAt(baseInterval.start)
-                        ));
-                        addedSegments.push(insertedSegment);
-                    }
-                    else if (segmentInterval.end != 1) {
-                        console.log('right sticking out');
-                        insertedSegment = insertSegment(segments, new Segment(
-                            base.getPointAt(baseInterval.end),
-                            segment.p2
-                        ));
-                        addedSegments.push(insertedSegment);
+                        //removing/redirecting segments
+                        segment.removed = true;
+                        var segmentInterval = intervals.segmentInterval;
+                        var insertedSegment;
+
+                        //possibly inserting new segments. note that these segments are always inserted in a later part of @code{segments}.
+                        if (segmentInterval.start != 0) {
+                            console.log('left sticking out');
+                            insertedSegment = insertSegment(segments, new Segment(
+                                segment.p1,
+                                base.getPointAt(baseInterval.start)
+                            ));
+                            addedSegments.push(insertedSegment);
+                        }
+                        else if (segmentInterval.end != 1) {
+                            console.log('right sticking out');
+                            insertedSegment = insertSegment(segments, new Segment(
+                                base.getPointAt(baseInterval.end),
+                                segment.p2
+                            ));
+                            addedSegments.push(insertedSegment);
+                        }
                     }
                 }
             }
