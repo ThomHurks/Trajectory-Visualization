@@ -41,29 +41,30 @@
        ALPHA = Math.PI / 180 * 5; // 5 degrees.
        EQUALIZE = false; // Makes all segments < 2 * epsilon length by linear interpolation.
 
-       var albatros = new GeoData('./data/albatros.csv', function() {
-           var trajectories = preProcess(albatros, EPS_S, ALPHA, EQUALIZE);
-           var segments = [];
-           for(var i = 0; i < trajectories.length;i++)
-           {
-               var traj = trajectories[i];
-               for(var j = 0; j < traj.length;j++)
-               {
-                   segments.push(traj[j]);
+       function CalculateTrajectories() {
+           var albatros = new GeoData('./data/albatros.csv', function () {
+               var trajectories = preProcess(albatros, EPS_S, ALPHA, EQUALIZE);
+               var segments = [];
+               for (var i = 0; i < trajectories.length; i++) {
+                   var traj = trajectories[i];
+                   for (var j = 0; j < traj.length; j++) {
+                       segments.push(traj[j]);
+                   }
                }
-           }
 
-           segments = runAlgorithm(segments);
-           display(segments);           
-       });
+               segments = runAlgorithm(segments);
+               display(segments);
+           });
+       }
+       CalculateTrajectories();
 
        var buttonsList = [{
            text: 'Print data to console',
-           callback: function() {
+           callback: function () {
                var data = albatros;
                if (data === undefined) {
                    console.log("Loading albatros data...");
-                   data = new GeoData('data/albatros.csv', function() {
+                   data = new GeoData('data/albatros.csv', function () {
                        console.log(data);
                    });
                } else {
