@@ -18,19 +18,25 @@ function preProcess(geodata,epsilon)
         trajectories.push(ct);
         origsegs+= ct.length;
     }
-    console.log(trajectories);
     var simplified = [];
+    var newsegs = 0;
     for(var i = 0; i < trajectories.length;i++)
     {
-        simplified.push(simplify(trajectories[i],epsilon));
+        var simp = simplify(trajectories[i],epsilon)
+        simplified.push(simp);
+        newsegs +=simp.length;
     }
-    console.log(simplified);
-    return simplified;
+    console.log("Simplified from " + origsegs + " to " + newsegs + " segments");
+     return simplified;
+
+
 
     //returns a simplified version of the trajectory
     function simplify(trajectory,epsilon)
     {
-        var traj1 = simplify1(trajectory,epsilon/2)
+        var alpha = Math.PI*2/360*5;//5 degrees
+        var traj1 = simplify1(trajectory,epsilon)
+        var traj2 = simplify2(traj1,alpha);
         //return trajectory;
         return traj1;
 
@@ -54,6 +60,11 @@ function preProcess(geodata,epsilon)
             }
 
             return simplified;
+        }
+
+        function simplify2(trajectory, alpha){//straightens out any slight curves. all bends are more than alpha after this algorithm
+
+            return trajectory;
         }
     }
 }
