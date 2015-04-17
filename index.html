@@ -146,6 +146,8 @@
            // in Leaflet combined with D3 is like rocket science.
            var baseZoom = 8;
 
+           // Make sure the event is not subscribed to twice.
+           map.off("viewreset", reset);
            map.on("viewreset", reset);
            reset();
 
