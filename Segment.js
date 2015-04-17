@@ -146,14 +146,28 @@ Segment.prototype.toString = function() {
 }
 
 Segment.prototype.getSubSegments = function() {
+
+    if (this.p1.x > -85.97 && this.p1.x < -85.96 && this.p1.y < -0.854 && this.p1.y > -0.855 || this.p2.x > -85.97 && this.p2.x < -85.96 && this.p2.y < -0.854 && this.p2.y > -0.855) {
+        console.log(this);
+    }
+
     var intervals = this.intervalTree.intervals;
     var segments = [];
 
     var points = [];
     points.push(this.getPointAt(intervals[0].start));
 
+    if (this.p1.x > -85.97 && this.p1.x < -85.96 && this.p1.y < -0.854 && this.p1.y > -0.855 || this.p2.x > -85.97 && this.p2.x < -85.96 && this.p2.y < -0.854 && this.p2.y > -0.855) {
+        console.log(points);
+    }
+
     for (var i = 0; i < intervals.length; i++) {
         points.push(this.getPointAt(intervals[i].end));
+
+        if (this.p1.x > -85.97 && this.p1.x < -85.96 && this.p1.y < -0.854 && this.p1.y > -0.855 || this.p2.x > -85.97 && this.p2.x < -85.96 && this.p2.y < -0.854 && this.p2.y > -0.855) {
+            console.log(segments);
+        }
+
         segments.push(new Segment(points[i], points[i+1], intervals[i].weight));
     }
 

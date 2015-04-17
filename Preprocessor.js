@@ -6,6 +6,7 @@ function preProcess(geodata,epsilon,alpha, equalize)
 {
     var trajectories = [];
     var origsegs = 0;
+    var doSimplify = true;
 
     for (var k in geodata.trajectories) {
         var traj = geodata.trajectories[k];
@@ -25,14 +26,24 @@ function preProcess(geodata,epsilon,alpha, equalize)
 
     for(var i = 0; i < trajectories.length;i++)
     {
-        var simp = simplify(trajectories[i],epsilon,alpha,equalize)
+        var simp;
+        var simp;
+        if (doSimplify) {
+            simp = simplify(trajectories[i],epsilon,alpha,equalize)
+        }
+        else {
+            simp = [];
+            for (var seg in trajectories[i]) {
+                simp.push(trajectories[i][seg]);
+            }
+        }
         simplified.push(simp);
         newsegs +=simp.length;
     }
-    console.log("Simplified from " + origsegs + " to " + newsegs + " segments");
+    if (doSimplify) {
+        console.log("Simplified from " + origsegs + " to " + newsegs + " segments");
+    }
     return simplified;
-
-
 
     //returns a simplified version of the trajectory
     function simplify(trajectory,epsilon,alpha,equalize)
@@ -45,8 +56,8 @@ function preProcess(geodata,epsilon,alpha, equalize)
         }
         return traj2
 
-        function simplify1(trajectory, minlength)//Driemel algorithm
-        {
+        //Driemel algorithm
+        function simplify1(trajectory, minlength) {
             var simplified = []
             var p1 = trajectory[0].p1;
             for(var i =0; i < trajectory.length;i++)

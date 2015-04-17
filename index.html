@@ -36,18 +36,18 @@
    <div id="map"></div>
    <div id="menu">test-test-test</div>
    <script type="text/javascript"> 
-       EPS = 0.2;
+       EPS = 0.05;
+       ALPHA = Math.PI*2/360*5;//5 degrees
+       EQUALIZE = false;//makes all segments < 2*epsilon length by linear interpolation.
+
 
        var albatros = new GeoData('./data/albatros.csv', function() {
-           var epsilon = 0.05;
-           var alpha = Math.PI*2/360*5;//5 degrees
-           var equalize = true;//makes all segments < 2*epsilon length by linear interpolation.
-           var trajectories = preProcess(albatros, epsilon, alpha, equalize);
+           var trajectories = preProcess(albatros, EPS, ALPHA, EQUALIZE);
            var segments = [];
-           for(var i =0; i < trajectories.length;i++)
+           for(var i = 0; i < trajectories.length;i++)
            {
                var traj = trajectories[i];
-               for(var j  =0; j < traj.length;j++)
+               for(var j = 0; j < traj.length;j++)
                {
                    segments.push(traj[j]);
                }
@@ -115,7 +115,14 @@
 
            var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
            var color = d3.scale.sqrt().domain(weightExtent).range(["white", "red"]);
-           var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return JSON.stringify(d); });
+           var tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+               var coordinates = d.geometry.coordinates;
+               return "(" +
+                       Math.floor(coordinates[0][0] * 100) / 100 + ", " + Math.floor(coordinates[0][1] * 100) / 100
+                       + "<br>" +
+                       Math.floor(coordinates[1][0] * 100) / 100 + ", " + Math.floor(coordinates[1][1] * 100) / 100
+                       + ")"
+           });
 
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
