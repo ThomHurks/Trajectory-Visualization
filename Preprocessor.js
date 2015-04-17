@@ -2,10 +2,11 @@
  * Created by Helmond on 17-4-2015.
  */
 //parses the geodata into trajectory data, applies simplification, returns
-function preProcess(geodata,epsilon)
+function preProcess(geodata,epsilon,alpha)
 {
     var trajectories = [];
     var origsegs = 0;
+
     for (var k in geodata.trajectories) {
         var traj = geodata.trajectories[k];
         var ct = [];
@@ -18,21 +19,28 @@ function preProcess(geodata,epsilon)
         trajectories.push(ct);
         origsegs+= ct.length;
     }
-    console.log(trajectories);
+
     var simplified = [];
+    var newsegs = 0;
+
     for(var i = 0; i < trajectories.length;i++)
     {
-        simplified.push(simplify(trajectories[i],epsilon));
+        var simp = simplify(trajectories[i],epsilon,alpha)
+        simplified.push(simp);
+        newsegs +=simp.length;
     }
-    console.log(simplified);
+    console.log("Simplified from " + origsegs + " to " + newsegs + " segments");
     return simplified;
 
+
+
     //returns a simplified version of the trajectory
-    function simplify(trajectory,epsilon)
+    function simplify(trajectory,epsilon,alpha)
     {
-        var traj1 = simplify1(trajectory,epsilon/2)
+        var traj1 = simplify1(trajectory,epsilon)
+        var traj2 = simplify2(traj1,alpha);
         //return trajectory;
-        return traj1;
+        return traj2;
 
         function simplify1(trajectory, minlength)//Driemel algorithm
         {
@@ -53,6 +61,30 @@ function preProcess(geodata,epsilon)
                 simplified.push(new Segment(p1,trajectory[trajectory.length-1].p2))
             }
 
+            return simplified;
+        }
+
+        function simplify2(trajectory, alpha){//straightens out any slight curves. all bends are more than alpha after this algorithm
+            var simplified = [];
+            var s1 = trajectory[0];
+            var d1 = trajectory[0].d.normalize();
+            for(var i = 1; i < trajectory.length;i++)
+            {
+                var s2 = trajectory[i];
+                var d2 = s2.d.normalize();
+                var dot = Vector.prototype.dot(d1,d2);
+                var angle = Math.acos(dot);
+
+                if(angle>=alpha)
+                {
+                    var nseg = new Segment(s1.p1,s2.p1);
+                    s1 = s2;
+                    d1 = d2;
+                    simplified.push(nseg);
+                }
+            }
+            var nseg = new Segment(s1.p1,trajectory[trajectory.length-1].p2);
+            simplified.push(nseg);
             return simplified;
         }
     }

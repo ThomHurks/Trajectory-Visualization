@@ -2,54 +2,47 @@ function runAlgorithm(segments) {
     "use strict";
 
     sortOnLength(segments);
-    var i, j,
-        addedSegments,
-        base,
-        segment,
-        intervals,
-        baseInterval,
-        segmentInterval,
-        insertedSegment;
 
-    for (i = 0; i < segments.length - 1; i++) {
+    for (var i = 0; i < segments.length - 1; i++) {
 
-        addedSegments = [];
-        base = segments[i];
+        var addedSegments = [];
+        var base = segments[i];
         if (!base.removed) {
 
             console.log("considering base:" + segments[i]);
-            for (j = i + 1; j < segments.length; j++) {
+            for (var j = i + 1; j < segments.length; j++) {
 
-                segment = segments[j];
-                if (!segment.removed && addedSegments.indexOf(segment) === -1) {
+                console.log(j);
+                var segment = segments[j];
+                if (!segment.removed && addedSegments.indexOf(segment) == -1) {
 
-                    intervals = base.projectOn(segment);
+                    var intervals = base.projectOn(segment);
                     console.log("considering segment:" + segments[j]);
 
-                    if (intervals !== null) {
+                    if (intervals.baseInterval != null && intervals.segmentInterval != null) {
                         //updating base interval tree
-                        baseInterval = intervals.baseInterval;
+                        var baseInterval = intervals.baseInterval;
                         base.intervalTree.addInterval(baseInterval);
 
                         //removing/redirecting segments
                         segment.removed = true;
-                        segmentInterval = intervals.segmentInterval;
+                        var segmentInterval = intervals.segmentInterval;
+                        var newSegment;
 
                         //possibly inserting new segments. note that these segments are always inserted in a later part of @code{segments}.
-                        if (segmentInterval.start !== 0) {
+                        if (segmentInterval.start != 0) {
                             console.log('left sticking out');
-                            insertedSegment = insertSegment(segments, new Segment(
-                                segment.p1,
-                                base.getPointAt(baseInterval.start)
-                            ));
-                            addedSegments.push(insertedSegment);
-                        } else if (segmentInterval.end !== 1) {
+                            newSegment = new Segment(segment.p1, base.getPointAt(baseInterval.start));
+                            insertSegment(segments, newSegment);
+                            addedSegments.push(newSegment);
+                            console.log("added segment:" + newSegment);
+                        }
+                        else if (segmentInterval.end != 1) {
                             console.log('right sticking out');
-                            insertedSegment = insertSegment(segments, new Segment(
-                                base.getPointAt(baseInterval.end),
-                                segment.p2
-                            ));
-                            addedSegments.push(insertedSegment);
+                            newSegment = new Segment(base.getPointAt(baseInterval.end), segment.p2);
+                            insertSegment(segments, newSegment);
+                            addedSegments.push(newSegment);
+                            console.log("added segment:" + newSegment);
                         }
                     }
                 }
@@ -59,34 +52,39 @@ function runAlgorithm(segments) {
 
     var result = [];
 
-    for (var k in segments) {
-        var segment = segments[k];
 
-        if (!segment.removed) {
-            result = result.concat(segment.getSubSegments());
+    console.log(segments);
+    for (var k in segments) {
+        var s = segments[k];
+
+        if (!s.removed) {
+            result = result.concat(s.getSubSegments());
         }
     }
 
+    console.log(result);
     return result;
 }
 
 function sortOnLength(segments) {
     "use strict";
-    segments.sort(function (s1, s2) {
+
+    segments.sort(function(s1, s2) {
         return s2.d.length() - s1.d.length();
     });
 }
 
 function insertSegment(segments, segment) {
     "use strict";
+
     segments.splice(linearSearch(segments, segment), 0, segment);
 }
 
 function linearSearch(segments, segment) {
     "use strict";
-    var i, s;
-    for (i = 0; i < segments.length; i++) {
-        s = segments[i];
+
+    for (var i = 0; i < segments.length; i++) {
+        var s = segments[i];
         if (segment.d.length() > s.d.length()) {
             return i;
         }
@@ -96,10 +94,11 @@ function linearSearch(segments, segment) {
 
 function binarySearch(segments, segment) {
     "use strict";
-    var minIndex = 0,
-        maxIndex = segments.length - 1,
-        currentIndex,
-        currentSegment;
+
+    var minIndex = 0;
+    var maxIndex = segments.length - 1;
+    var currentIndex;
+    var currentSegment;
 
     while (minIndex <= maxIndex) {
         currentIndex = (minIndex + maxIndex) / 2 | 0;
@@ -110,9 +109,11 @@ function binarySearch(segments, segment) {
 
         if (currentSegment.d.length() > segment.d.length()) {
             minIndex = currentIndex + 1;
-        } else if (currentSegment.d.length() < segment.d.length()) {
+        }
+        else if (currentSegment.d.length() < segment.d.length()) {
             maxIndex = currentIndex - 1;
-        } else {
+        }
+        else {
             return currentIndex;
         }
     }

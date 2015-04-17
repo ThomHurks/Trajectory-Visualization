@@ -9,7 +9,7 @@ function Vector(x,y){
 
 Vector.prototype.add = function(v){return new Vector(this.x+ v.x,this.y+ v.y)};
 Vector.prototype.subtract = function(v){return new Vector(this.x- v.x,this.y- v.y)};
-Vector.prototype.dot = function(u,v){return u.x* v.x+v.y* v.y;};
+Vector.prototype.dot = function(u,v){return u.x* v.x+u.y* v.y;};
 Vector.prototype.cross2D = function(u,v){return u.x* v.y-u.y* v.x;};
 Vector.prototype.scale = function(s){return(new Vector(this.x*s,this.y*s));};
 Vector.prototype.length = function(){return Math.sqrt(this.x*this.x+this.y*this.y);};
