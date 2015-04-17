@@ -6,16 +6,11 @@
 	<link rel="stylesheet" href="css/leaflet.css" />
     <link rel="stylesheet" href="css/leaflet-control-boxzoom.css" />
     <link rel="stylesheet" href="css/leaflet.contextmenu.css" />
+    <link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/d3-tip-styles.css" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
-	<style type="text/css">
-        body {
-            padding: 0;
-            margin: 0;
-        }
-        html, body, #map {
-            height: 100%;
-        }
-    </style>
+    <link href="css/style.css" rel="stylesheet">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="lib/leaflet.js"></script>
@@ -28,17 +23,20 @@
     <script src="IntervalTree.js"></script>
     <script src="Interval.js"></script>
     <script src="Preprocessor.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
 	<script src="lib/leaflet-dvf.js"></script>
 	<script src="lib/leaflet.dvf.experimental.js"></script>
     <script type='text/javascript' src="lib/leaflet.restoreview.js"></script>
     <script src="lib/leaflet-control-boxzoom.js"></script>
     <script src="lib/leaflet.contextmenu.js"></script>
+    <script src="lib/d3-tip.js"></script>
 	<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
 </head>
 <body>
    <div id="map"></div>
+   <div id="menu">test-test-test</div>
    <script type="text/javascript"> 
-       EPS = 0.5;
+       EPS = 0.2;
 
        var albatros = new GeoData('./data/albatros.csv', function() {
            console.log(albatros);
@@ -115,6 +113,7 @@
 
            var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
            var color = d3.scale.sqrt().domain(weightExtent).range(["white", "red"]);
+           var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return JSON.stringify(d); });
 
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
@@ -123,7 +122,11 @@
                    .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight); })
                    .style("stroke-linecap", "round")
                    .style("stroke", function(d) { return color(d.properties.edgeweight); })
-                   .style("fill", "none");
+                   .style("fill", "none")
+                   .on('mouseover', tip.show)
+                   .on('mouseout', tip.hide);
+
+           feature.call(tip);
 
            // This is the zoomlevel at which the edgeweight variable corresponds 1-to-1 with screen pixel units.
            // Adjust this number to adjust how edges scale. This is basically a hack, but native SVG scaling
