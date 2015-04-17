@@ -17,9 +17,9 @@ IntervalTree.prototype.addInterval = function(interval) {
         }
     }
 
-    console.log(interval.clone());
-    console.log(indexLeft);
-    console.log(indexRight);
+    //console.log(interval.clone());
+    //console.log(indexLeft);
+    //console.log(indexRight);
 
 
     //increment weights of intervals contained in given interval
@@ -52,7 +52,7 @@ IntervalTree.prototype.addInterval = function(interval) {
         }
     }
 
-    console.log(this.clone());
+    //console.log(this.clone());
 
 };
 
