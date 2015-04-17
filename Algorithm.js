@@ -73,7 +73,6 @@ function runAlgorithm(segments) {
 function sortOnLength(segments) {
     "use strict";
     segments.sort(function (s1, s2) {
-        console.log(s2.d);
         return s2.d.length() - s1.d.length();
     });
 }
