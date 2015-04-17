@@ -1,15 +1,8 @@
 /**
  * Created by Helmond on 16-4-2015.
  */
-
-function Segment(p1,p2, weight)
+function Segment(p1,p2)
 {
-    this.weight = 1;
-
-    if (weight != undefined) {
-        this.weight = weight;
-    }
-
     this.p1;
     this.p2;
 
@@ -139,19 +132,4 @@ Segment.prototype.projectOn = function(segment) {
 
 Segment.prototype.toString = function() {
     return '<' + this.p1.toString() + '   ' + this.p2.toString() + '>';
-}
-
-Segment.prototype.getSubSegments = function() {
-    var intervals = this.intervalTree.intervals;
-    var segments = [];
-
-    var points = [];
-    points.push(this.getPointAt(intervals[0].start));
-
-    for (var i = 0; i < intervals.length; i++) {
-        points.push(this.getPointAt(intervals[i].end));
-        segments.push(new Segment(points[i], points[i+1], intervals[i].weight));
-    }
-
-    return segments;
 }
