@@ -2,7 +2,7 @@
  * Created by Helmond on 16-4-2015.
  */
 
-function Line(p1,p2)
+function Segment(p1,p2)
 {
     this.p1;
     this.p2;
@@ -17,8 +17,10 @@ function Line(p1,p2)
 
     this.d = p2.subtract(p1);
 
+    this.weight = null;
     this.pre = null;
     this.suc = null;
+    this.interval = null;
 
     return(this);
 }
@@ -26,7 +28,7 @@ function Line(p1,p2)
 //Returns null if the lines are collinear, or partially overlap.
 //Otherwise, returns an array [t,u] such that the intersection point lies at this.getPointAt(t) or l.getPointAt(u)
 // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-Line.prototype.getIntersection = function(l){//returns the intersection point between line l1 and l2
+Segment.prototype.getIntersection = function(l){//returns the intersection point between line l1 and l2
     var A = this.p1;
     var B = this.p2;
     var C = l.p1;
@@ -52,15 +54,24 @@ Line.prototype.getIntersection = function(l){//returns the intersection point be
 };
 
 //Returns the point on this line that lies at 100*t % from p1 to p2.
-Line.prototype.getPointAt = function(t){
+Segment.prototype.getPointAt = function(t){
     return this.p1.add(this.d.scale(t));
 };
 
 //Returns at what side of the line
 //http://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
-Line.prototype.sideOf = function(p){
+Segment.prototype.sideOf = function(p){
     var A = -(this.p2.y - this.p1.y);
     var B = this.p2.x - this.p1.x;
     var C = -(A * this.p1.x + B * this.p1.y)
     return A * p.x + B * p.y + C
 };
+
+Segment.prototype.projectOn = function(segment) {
+
+    /*
+    determines if the given segment can be projected on this segment with epsilon closeness and if so, retuns
+    the two floats that describe the epsilon close interval on this segment. otherwise return null.
+    */
+
+}

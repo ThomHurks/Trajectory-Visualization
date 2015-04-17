@@ -3,7 +3,7 @@
  */
 function Rectangle(p1,p2,p3,p4){//the 4 points defining the rectangle. No check for right angles is done
     //this.ps = [p1,p2,p3,p4];
-    this.ls = [new Line(p1,p2),new Line(p2,p3),new Line(p3,p4),new Line(p4,p1)];
+    this.ls = [new Segment(p1,p2),new Segment(p2,p3),new Segment(p3,p4),new Segment(p4,p1)];
     return this;
 }
 

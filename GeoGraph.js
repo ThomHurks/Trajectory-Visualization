@@ -5,9 +5,11 @@
  */
 function GeoGraph(data, epsilon) {
     console.log("epsilon: " + epsilon);
+
     var glob = this;
     this.segments = [];
     this.epsilon = epsilon;
+
     for(var i in data.trajectories)
     {
         var traj = data.trajectories[i];
@@ -15,7 +17,7 @@ function GeoGraph(data, epsilon) {
         for(var j = 1; j < traj.length;j++)
         {
             var p2 = itemToVector(traj[j]);
-            this.segments.push(new Line(p1,p2));
+            this.segments.push(new Segment(p1,p2));
             p1=p2;
         }
     }
@@ -69,7 +71,7 @@ function GeoGraph(data, epsilon) {
                     var t2 = inside[1];
                     var p1 = seg.getPointAt(t1);
                     var p2 = seg.getPointAt(t2);
-                    var subseg = new Line(p1,p2);
+                    var subseg = new Segment(p1,p2);
                     nextLevelSegments.push(subseg);
                 }
             }

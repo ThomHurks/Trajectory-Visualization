@@ -21,7 +21,7 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="lib/leaflet.js"></script>
     <script src="GeoData.js"></script>
-    <script src="Line.js"></script>
+    <script src="Segment.js"></script>
     <script src="Vector.js"></script>
     <script src="Collection.js"></script>
 	<script src="lib/leaflet-dvf.js"></script>
@@ -46,7 +46,7 @@
                for (var i = 0; i < traj.length - 1; i++) {
                    var a = traj[i];
                    var b = traj[i+1];
-                   collection.addSegment(new Line(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
+                   collection.addSegment(new Segment(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
                }
            }
 
