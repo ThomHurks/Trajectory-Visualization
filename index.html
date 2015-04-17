@@ -43,6 +43,7 @@
 
        function CalculateTrajectories() {
            var albatros = new GeoData('./data/albatros.csv', function () {
+               console.log("Calculating with parameters EPS: " + EPS + " EPS_S " + EPS_S + " ALPHA " + ALPHA + " EQ " + EQUALIZE);
                var trajectories = preProcess(albatros, EPS_S, ALPHA, EQUALIZE);
                var segments = [];
                for (var i = 0; i < trajectories.length; i++) {
@@ -127,9 +128,8 @@
                        + ")"
            });
 
-           var feature = g.selectAll("path")
-                   .data(geoJSON.features)
-                   .enter().append("path")
+           var updateSelection = g.selectAll("path").data(geoJSON.features);
+           var feature = updateSelection.enter().append("path")
                    .attr('stroke-width', function(d) { return Math.sqrt(d.properties.edgeweight); })
                    .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight); })
                    .style("stroke-linecap", "round")
@@ -137,6 +137,7 @@
                    .style("fill", "none")
                    .on('mouseover', tip.show)
                    .on('mouseout', tip.hide);
+           updateSelection.exit().remove();
 
            feature.call(tip);
 
