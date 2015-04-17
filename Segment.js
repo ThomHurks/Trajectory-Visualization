@@ -154,4 +154,4 @@ Segment.prototype.getSubSegments = function() {
     }
 
     return segments;
-}
+} // test wim hallo
