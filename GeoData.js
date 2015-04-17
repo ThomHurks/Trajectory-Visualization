@@ -6,8 +6,8 @@ function GeoData(path, done) {
     var values = ['event-id', 'timestamp', 'location-lat', 'location-long', 'tag-local-identifier'],
         map = this,
         dateTimeFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L"),
-        item,
-        r;
+        item;
+
     map.path = path;
     map.line_separator = '\n';
     map.word_separator = ',';
@@ -84,7 +84,7 @@ function GeoData(path, done) {
         }
 
         keep(values);
-    }).done(function() {
+    }).done(function () {
         done();
     });
 }
