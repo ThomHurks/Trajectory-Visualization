@@ -2,7 +2,7 @@
  * Created by Helmond on 17-4-2015.
  */
 //parses the geodata into trajectory data, applies simplification, returns
-function preProcess(geodata,epsilon)
+function preProcess(geodata,epsilon,alpha)
 {
     var trajectories = [];
     var origsegs = 0;
@@ -22,7 +22,7 @@ function preProcess(geodata,epsilon)
     var newsegs = 0;
     for(var i = 0; i < trajectories.length;i++)
     {
-        var simp = simplify(trajectories[i],epsilon)
+        var simp = simplify(trajectories[i],epsilon,alpha)
         simplified.push(simp);
         newsegs +=simp.length;
     }
@@ -32,9 +32,8 @@ function preProcess(geodata,epsilon)
 
 
     //returns a simplified version of the trajectory
-    function simplify(trajectory,epsilon)
+    function simplify(trajectory,epsilon,alpha)
     {
-        var alpha = Math.PI*2/360*5;//90 degrees
         var traj1 = simplify1(trajectory,epsilon)
         var traj2 = simplify2(traj1,alpha);
         //return trajectory;
