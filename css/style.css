@@ -2,6 +2,18 @@ body {
     padding: 0;
     margin: 0;
 }
-html, body, #map {
+html, body {
     height: 100%;
+}
+
+#map {
+    height: 100%;
+
+}
+
+#menu {
+    z-index: 999;
+    height: 600px;
+    width: 200px;
+    background-color: white;position: absolute;
 }
