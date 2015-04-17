@@ -42,8 +42,8 @@
 
        var albatros = new GeoData('./data/albatros.csv', function() {
            console.log(albatros);
-
-           var segments = preProcess(albatros);
+            var epsilon = 0.001;
+           var segments = preProcess(albatros,epsilon);
 
 
 

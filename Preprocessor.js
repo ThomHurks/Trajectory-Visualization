@@ -2,7 +2,7 @@
  * Created by Helmond on 17-4-2015.
  */
 //parses the geodata into trajectory data, applies simplification, returns
-function preProcess(geodata)
+function preProcess(geodata,epsilon)
 {
     var trajectories = [];
     for (var k in geodata.trajectories) {
@@ -20,7 +20,7 @@ function preProcess(geodata)
     var simplified = [];
     for(var i = 0; i < trajectories.length;i++)
     {
-        simplified.push(simplify(trajectories[i]));
+        simplified.push(simplify(trajectories[i],epsilon));
     }
     if(false)trajectories=simplified;
     //convert to segments for rest of the algorithm:
@@ -37,9 +37,15 @@ function preProcess(geodata)
     return segs;
 
     //returns a simplified version of the trajectory
-    function simplify(trajectory)
+    function simplify(trajectory,epsilon)
     {
+        var traj1 = simplify1(trajectory,epsilon/2)
         return trajectory;
+
+        function simplify1(trajectory, minlength)
+        {
+            var p1 = trajectory[0].p1;
+        }
     }
 }
 
