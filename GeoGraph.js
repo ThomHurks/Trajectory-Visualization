@@ -3,12 +3,10 @@
  *
  * Screw spherical geometry for now. Use euclidean geometry for lazyness reasons
  */
-function GeoGraph(data, epsilon) {
-    console.log("epsilon: " + epsilon);
+function GeoGraph(data) {
 
     var glob = this;
     this.segments = [];
-    this.epsilon = epsilon;
 
     for(var i in data.trajectories)
     {
