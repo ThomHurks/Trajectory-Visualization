@@ -2,7 +2,7 @@
  * Created by Helmond on 17-4-2015.
  */
 //parses the geodata into trajectory data, applies simplification, returns
-function preProcess(geodata,epsilon,alpha)
+function preProcess(geodata,epsilon,alpha, equalize)
 {
     var trajectories = [];
     var origsegs = 0;
@@ -25,7 +25,7 @@ function preProcess(geodata,epsilon,alpha)
 
     for(var i = 0; i < trajectories.length;i++)
     {
-        var simp = simplify(trajectories[i],epsilon,alpha)
+        var simp = simplify(trajectories[i],epsilon,alpha,equalize)
         simplified.push(simp);
         newsegs +=simp.length;
     }
@@ -35,12 +35,15 @@ function preProcess(geodata,epsilon,alpha)
 
 
     //returns a simplified version of the trajectory
-    function simplify(trajectory,epsilon,alpha)
+    function simplify(trajectory,epsilon,alpha,equalize)
     {
         var traj1 = simplify1(trajectory,epsilon)
         var traj2 = simplify2(traj1,alpha);
-        //return trajectory;
-        return traj2;
+        if(equalize){
+            var traj3 = simplify3(traj2,epsilon);
+            return traj3;
+        }
+        return traj2
 
         function simplify1(trajectory, minlength)//Driemel algorithm
         {
@@ -85,6 +88,33 @@ function preProcess(geodata,epsilon,alpha)
             }
             var nseg = new Segment(s1.p1,trajectory[trajectory.length-1].p2);
             simplified.push(nseg);
+            return simplified;
+        }
+
+        function simplify3(trajectory,epsilon)//Makes sure no segments exceed 2*epsilon in length
+        {
+            var simplified = [];
+            for(var i = 0; i < trajectory.length;i++)
+            {
+                var seg = trajectory[i];
+                var l = seg.length;
+                var pieces = l/(2*epsilon);
+                if(pieces>1)
+                {
+                    pieces = Math.ceil(pieces);
+                    var p1 = seg.p1;
+                    for(var j = 0; j<pieces;j++)
+                    {
+                        var percent = (j+1)/pieces;
+                        var p2 = seg.getPointAt(percent);
+                        simplified.push(new Segment(p1,p2));
+                        p1=p2;
+                    }
+                }else
+                {
+                    simplified.push(seg);
+                }
+            }
             return simplified;
         }
     }

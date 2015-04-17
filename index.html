@@ -44,7 +44,8 @@
            console.log(albatros);
             var epsilon = 0.05;
            var alpha = Math.PI*2/360*5;//5 degrees
-           var trajectories = preProcess(albatros,epsilon,alpha);
+           var equalize = true;//makes all segments < 2*epsilon length by linear interpolation.
+           var trajectories = preProcess(albatros,epsilon,alpha,equalize);
            var segments = [];
            for(var i =0; i < trajectories.length;i++)
            {
