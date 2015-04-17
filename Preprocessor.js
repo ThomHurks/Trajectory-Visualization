@@ -82,9 +82,6 @@ function preProcess(geodata,epsilon,alpha)
                     d1 = d2;
                     simplified.push(nseg);
                 }
-                else{
-                    console.log(s2);
-                }
             }
             var nseg = new Segment(s1.p1,trajectory[trajectory.length-1].p2);
             simplified.push(nseg);
