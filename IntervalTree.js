@@ -1,14 +1,21 @@
 function IntervalTree() {
+    "use strict";
     this.intervals = [new Interval(0, 1, 1)];
 }
 
 //add interval to tree and split the intervals accordingly and change the weights
-IntervalTree.prototype.addInterval = function(interval) {
-    var indexLeft = -1;
-    var indexRight = this.intervals.length;
+IntervalTree.prototype.addInterval = function (interval) {
+    "use strict";
+    var indexLeft = -1,
+        indexRight = this.intervals.length,
+        i,
+        currentInterval,
+        newInterval = null,
+        intervalLeft,
+        intervalRight;
 
-    for (var i = 0; i < this.intervals.length; i++) {
-        var currentInterval = this.intervals[i];
+    for (i = 0; i < this.intervals.length; i++) {
+        currentInterval = this.intervals[i];
         if (currentInterval.contains(interval.start, false, true)) {
             indexLeft = i;
         }
@@ -18,16 +25,14 @@ IntervalTree.prototype.addInterval = function(interval) {
     }
 
     //increment weights of intervals contained in given interval
-    for (var i = indexLeft + 1; i <= indexRight - 1; i++) {
+    for (i = indexLeft + 1; i <= indexRight - 1; i++) {
         this.intervals[i].weight++;
     }
 
-    var newInterval = null;
-
     //split left containing interval
     if (indexLeft >= 0) {
-        var intervalLeft = this.intervals[indexLeft];
-        if (intervalLeft.end != interval.start) {
+        intervalLeft = this.intervals[indexLeft];
+        if (intervalLeft.end !== interval.start) {
             newInterval = new Interval(interval.start, intervalLeft.end, intervalLeft.weight + 1);
             intervalLeft.end = interval.start;
 
@@ -38,8 +43,8 @@ IntervalTree.prototype.addInterval = function(interval) {
 
     //split right containing interval
     if (indexRight < this.intervals.length) {
-        var intervalRight = this.intervals[indexRight];
-        if (intervalRight.start != interval.end) {
+        intervalRight = this.intervals[indexRight];
+        if (intervalRight.start !== interval.end) {
             newInterval = new Interval(intervalRight.start, interval.end, intervalRight.weight + 1);
             intervalRight.start = interval.end;
 
@@ -48,13 +53,12 @@ IntervalTree.prototype.addInterval = function(interval) {
     }
 };
 
-IntervalTree.prototype.clone = function() {
-    var intervalsCopy = [];
-    for (var interval in this.intervals) {
+IntervalTree.prototype.clone = function () {
+    "use strict";
+    var intervalsCopy = [],
+        interval;
+    for (interval in this.intervals) {
         intervalsCopy.push(this.intervals[interval].clone());
     }
-    return intervalsCopy
+    return intervalsCopy;
 };
-
-
-
