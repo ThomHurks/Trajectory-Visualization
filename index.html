@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/leaflet.contextmenu.css" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
 	<style type="text/css">
-        <!-- enough styling to make a full-page map -->
         body {
             padding: 0;
             margin: 0;
@@ -55,16 +54,17 @@
                }
            }
 
+           segments = [
+               new Segment(new Vector(0, 1), new Vector(5, 1)),
+               new Segment(new Vector(0, 0), new Vector(10, 0))
+            ];
+
            segments = runAlgorithm(segments);
            display(segments);
-
-           var s1 = new Segment(new Vector(0, 0), new Vector(0,2));
-           var s2 = new Segment(new Vector(-2, 2), new Vector(0,2));
-           s1.projectOn(s2);
        });
 
        var buttonsList = [{
-           text: 'Knop voor Jeroen',
+           text: 'Print data to console',
            callback: function() {
                console.log("Loading albatros data...");
                var albatros = new GeoData('data/albatros.csv', function() {
@@ -82,6 +82,7 @@
            contextmenuWidth: 140,
            contextmenuItems: buttonsList
        });
+
        L.tileLayer('https://{s}.tiles.mapbox.com/v4/thomhurks.lifnnoec/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoidGhvbWh1cmtzIiwiYSI6ImtENDluRmsifQ.Q4w4kAlNk0YfaRclQp4BMA', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18,
@@ -93,9 +94,9 @@
             bounds: null
 		}).addTo(map);
 
-        L.Control.boxzoom({ position:'topleft' }).addTo(map);
+       L.Control.boxzoom({ position:'topleft' }).addTo(map);
 
-        var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+       var svg = d3.select(map.getPanes().overlayPane).append("svg"),
                 g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
        function display(segments) {
@@ -103,7 +104,6 @@
            //convert to GeoJSON
            var geoJSON = new GeoJSON();
            geoJSON.addSegments(segments);
-
 
            //Display it
            var transform = d3.geo.transform({point: projectPoint}),
@@ -166,11 +166,13 @@
                this.stream.point(point.x, point.y);
            }
        }
+
         /*
        d3.json("data/paths.json", function(geoJSON) {
            display(geoJSON);
        });
         */
+
 		var marker = L.marker([51.5, -0.09]).addTo(map);
 		var circle = L.circle([51.508, -0.11], 500, {
 		    color: 'red',
