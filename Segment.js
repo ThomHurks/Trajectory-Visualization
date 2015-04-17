@@ -17,10 +17,10 @@ function Segment(p1,p2)
 
     this.d = p2.subtract(p1);
 
-    this.weight = null;
     this.pre = null;
     this.suc = null;
-    this.interval = null;
+    this.intervalTree = null;
+    this.removed = false;
 
     return(this);
 }
@@ -67,10 +67,10 @@ Segment.prototype.sideOf = function(p){
     return A * p.x + B * p.y + C
 };
 
-Segment.prototype.projectOn = function(segment) {
+Segment.prototype.projectOn = function(base) {
 
     var s1 = new Segment(this.p1, this.p2);
-    var s2 = new Segment(segment.p1, segment.p2);
+    var s2 = new Segment(base.p1, base.p2);
 
     console.log(s1.toString());
     console.log(s2.toString());
@@ -99,8 +99,10 @@ Segment.prototype.projectOn = function(segment) {
     console.log(s1.toString());
     console.log(s2.toString());
     console.log('-------');
-}
 
-Segment.prototype.toString = function() {
-    return '<' + this.p1.toString() + '   ' + this.p2.toString() + '>';
-}
+
+    return {
+        segmentInterval: null,
+        baseInterval: null
+    }
+};

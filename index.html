@@ -21,9 +21,12 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="lib/leaflet.js"></script>
     <script src="GeoData.js"></script>
+    <script src="GeoJSON.js"></script>
+    <script src="Algorithm.js"></script>
     <script src="Segment.js"></script>
     <script src="Vector.js"></script>
-    <script src="Collection.js"></script>
+    <script src="IntervalTree.js"></script>
+    <script src="Interval.js"></script>
 	<script src="lib/leaflet-dvf.js"></script>
 	<script src="lib/leaflet.dvf.experimental.js"></script>
     <script type='text/javascript' src="lib/leaflet.restoreview.js"></script>
@@ -38,7 +41,7 @@
        var albatros = new GeoData('./data/albatros.csv', function() {
            console.log(albatros);
 
-           var collection = new Collection();
+           var segments = [];
 
            for (var k in albatros.trajectories) {
                var traj = albatros.trajectories[k];
@@ -46,17 +49,18 @@
                for (var i = 0; i < traj.length - 1; i++) {
                    var a = traj[i];
                    var b = traj[i+1];
-                   collection.addSegment(new Segment(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
+
+                   segments.push(new Segment(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
                }
            }
 
-           display(collection);
+           segments = runAlgorithm(segments);
+           display(segments);
 
            var s1 = new Segment(new Vector(0, 0), new Vector(0,2));
            var s2 = new Segment(new Vector(-2, 2), new Vector(0,2));
-
            s1.projectOn(s2);
-       })
+       });
 
        var buttonsList = [{
            text: 'Knop voor Jeroen',
@@ -93,17 +97,24 @@
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
                 g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-       function display(collection) {
+       function display(segments) {
+
+           //convert to GeoJSON
+           var geoJSON = new GeoJSON();
+           geoJSON.addSegments(segments);
+
+
+           //Display it
            var transform = d3.geo.transform({point: projectPoint}),
                    path = d3.geo.path().projection(transform);
 
            if (!map.restoreView()) {
-               var firstCoord = collection.features[0].geometry.coordinates[0];
+               var firstCoord = geoJSON.features[0].geometry.coordinates[0];
                map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
            }
 
            var feature = g.selectAll("path")
-                   .data(collection.features)
+                   .data(geoJSON.features)
                    .enter().append("path")
                    .attr('stroke-width', function(d) { return d.properties.edgeweight; })
                    .style("stroke-width", function(d) { return d.properties.edgeweight; })
@@ -125,7 +136,7 @@
                var zoomDiff = newZoom - baseZoom;
                var scale = Math.pow(2, zoomDiff);
 
-               var bounds = path.bounds(collection),
+               var bounds = path.bounds(geoJSON),
                        topLeft = bounds[0],
                        bottomRight = bounds[1];
 
@@ -155,8 +166,8 @@
            }
        }
         /*
-       d3.json("data/paths.json", function(collection) {
-           display(collection);
+       d3.json("data/paths.json", function(geoJSON) {
+           display(geoJSON);
        });
         */
 		var marker = L.marker([51.5, -0.09]).addTo(map);
