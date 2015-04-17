@@ -123,13 +123,17 @@
                map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
            }
 
+           var weightExtent = d3.extent(geoJSON.features, function(d) { return d.properties.edgeweight; });
+           var color = d3.scale.linear().domain(weightExtent).range(["white", "red"]);
+
+
            var feature = g.selectAll("path")
                    .data(geoJSON.features)
                    .enter().append("path")
                    .attr('stroke-width', function(d) { return d.properties.edgeweight; })
                    .style("stroke-width", function(d) { return d.properties.edgeweight; })
                    .style("stroke-linecap", "round")
-                   .style("stroke", "steelblue")
+                   .style("stroke", function(d) { return color(d.properties.edgeweight); })
                    .style("fill", "none");
 
            // This is the zoomlevel at which the edgeweight variable corresponds 1-to-1 with screen pixel units.
