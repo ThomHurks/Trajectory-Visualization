@@ -21,6 +21,9 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="lib/leaflet.js"></script>
     <script src="GeoData.js"></script>
+    <script src="Line.js"></script>
+    <script src="Vector.js"></script>
+    <script src="Collection.js"></script>
 	<script src="lib/leaflet-dvf.js"></script>
 	<script src="lib/leaflet.dvf.experimental.js"></script>
     <script type='text/javascript' src="lib/leaflet.restoreview.js"></script>
@@ -31,6 +34,24 @@
 <body>
    <div id="map"></div>
    <script type="text/javascript"> 
+
+       var albatros = new GeoData('./data/albatros.csv', function() {
+           console.log(albatros);
+
+           var collection = new Collection();
+
+           for (var k in albatros.trajectories) {
+               var traj = albatros.trajectories[k];
+
+               for (var i = 0; i < traj.length - 1; i++) {
+                   var a = traj[i];
+                   var b = traj[i+1];
+                   collection.addSegment(new Line(new Vector(a['location-long'], a['location-lat']), new Vector(b['location-long'], b['location-lat'])));
+               }
+           }
+
+           display(collection);
+       })
 
        var buttonsList = [{
            text: 'Knop voor Jeroen',
@@ -67,69 +88,72 @@
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
                 g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-        d3.json("data/paths.json", function(collection) {
+       function display(collection) {
+           var transform = d3.geo.transform({point: projectPoint}),
+                   path = d3.geo.path().projection(transform);
 
-            var transform = d3.geo.transform({point: projectPoint}),
-                    path = d3.geo.path().projection(transform);
+           if (!map.restoreView()) {
+               var firstCoord = collection.features[0].geometry.coordinates[0];
+               map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
+           }
 
-            if (!map.restoreView()) {
-                var firstCoord = collection.features[0].geometry.coordinates[0];
-                map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
-            }
+           var feature = g.selectAll("path")
+                   .data(collection.features)
+                   .enter().append("path")
+                   .attr('stroke-width', function(d) { return d.properties.edgeweight; })
+                   .style("stroke-width", function(d) { return d.properties.edgeweight; })
+                   .style("stroke-linecap", "round")
+                   .style("stroke", "steelblue")
+                   .style("fill", "none");
 
-            var feature = g.selectAll("path")
-                    .data(collection.features)
-                    .enter().append("path")
-                    .attr('stroke-width', function(d) { return d.properties.edgeweight; })
-                    .style("stroke-width", function(d) { return d.properties.edgeweight; })
-                    .style("stroke-linecap", "round")
-                    .style("stroke", "steelblue")
-                    .style("fill", "none");
+           // This is the zoomlevel at which the edgeweight variable corresponds 1-to-1 with screen pixel units.
+           // Adjust this number to adjust how edges scale. This is basically a hack, but native SVG scaling
+           // in Leaflet combined with D3 is like rocket science.
+           var baseZoom = 8;
 
-            // This is the zoomlevel at which the edgeweight variable corresponds 1-to-1 with screen pixel units.
-            // Adjust this number to adjust how edges scale. This is basically a hack, but native SVG scaling
-            // in Leaflet combined with D3 is like rocket science.
-            var baseZoom = 8;
+           map.on("viewreset", reset);
+           reset();
 
-            map.on("viewreset", reset);
-            reset();
+           // Reposition the SVG to cover the features.
+           function reset(e) {
+               var newZoom = map.getZoom();
+               var zoomDiff = newZoom - baseZoom;
+               var scale = Math.pow(2, zoomDiff);
 
-            // Reposition the SVG to cover the features.
-            function reset(e) {
-                var newZoom = map.getZoom();
-                var zoomDiff = newZoom - baseZoom;
-                var scale = Math.pow(2, zoomDiff);
+               var bounds = path.bounds(collection),
+                       topLeft = bounds[0],
+                       bottomRight = bounds[1];
 
-                var bounds = path.bounds(collection),
-                    topLeft = bounds[0],
-                    bottomRight = bounds[1];
+               // Add offset because D3 is silly.
+               topLeft[0] -= 25;
+               topLeft[1] -= 25;
+               bottomRight[0] += 25;
+               bottomRight[1] += 25;
 
-                // Add offset because D3 is silly.
-                topLeft[0] -= 25;
-                topLeft[1] -= 25;
-                bottomRight[0] += 25;
-                bottomRight[1] += 25;
+               svg.attr("width", bottomRight[0] - topLeft[0])
+                       .attr("height", bottomRight[1] - topLeft[1])
+                       .style("left", topLeft[0] + "px")
+                       .style("top", topLeft[1] + "px");
 
-                svg.attr("width", bottomRight[0] - topLeft[0])
-                    .attr("height", bottomRight[1] - topLeft[1])
-                    .style("left", topLeft[0] + "px")
-                    .style("top", topLeft[1] + "px");
+               g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+               feature.attr("d", path);
 
-                feature.attr("d", path);
+               feature.attr('stroke-width', function(d) { return d.properties.edgeweight * scale; })
+                       .style("stroke-width", function(d) { return d.properties.edgeweight * scale; });
+           }
 
-                feature.attr('stroke-width', function(d) { return d.properties.edgeweight * scale; })
-                        .style("stroke-width", function(d) { return d.properties.edgeweight * scale; });
-            }
-
-            // Use Leaflet to implement a D3 geometric transformation.
-            function projectPoint(x, y) {
-                var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-                this.stream.point(point.x, point.y);
-            }
-        });
-
+           // Use Leaflet to implement a D3 geometric transformation.
+           function projectPoint(x, y) {
+               var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+               this.stream.point(point.x, point.y);
+           }
+       }
+        /*
+       d3.json("data/paths.json", function(collection) {
+           display(collection);
+       });
+        */
 		var marker = L.marker([51.5, -0.09]).addTo(map);
 		var circle = L.circle([51.508, -0.11], 500, {
 		    color: 'red',
