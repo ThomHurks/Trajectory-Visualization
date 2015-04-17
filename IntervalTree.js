@@ -17,14 +17,15 @@ IntervalTree.prototype.addInterval = function(interval) {
         }
     }
 
-    //increment weights of intervals contained in given interval
-    for (var i = indexLeft + 1; i < indexRight - 1; i++) {
-        this.intervals[i].weight++;
-    }
-
     console.log(interval);
     console.log(indexLeft);
     console.log(indexRight);
+
+
+    //increment weights of intervals contained in given interval
+    for (var i = indexLeft + 1; i < indexRight; i++) {
+        this.intervals[i].weight++;
+    }
 
     var newInterval = null;
 
@@ -35,7 +36,7 @@ IntervalTree.prototype.addInterval = function(interval) {
             newInterval = new Interval(interval.start, intervalLeft.end, intervalLeft.weight + 1);
             intervalLeft.end = interval.start;
 
-            this.intervals.splice(indexLeft + 1, 0, newInterval);
+            this.intervals.splice(indexLeft, 0, newInterval);
             indexRight++;
         }
     }
@@ -44,12 +45,14 @@ IntervalTree.prototype.addInterval = function(interval) {
     if (indexRight < this.intervals.length) {
         var intervalRight = this.intervals[indexRight];
         if (intervalRight.start != interval.end) {
-            newInterval = new Interval(intervalRight.start, interval.end, intervalLeft.weight + 1);
+            newInterval = new Interval(intervalRight.start, interval.end, intervalRight.weight + 1);
             intervalRight.start = interval.end;
 
-            this.intervals.splice(indexRight + 1, 0, newInterval);
+            this.intervals.splice(indexRight, 0, newInterval);
         }
     }
+
+    console.log(this.intervals);
 
 };
 
