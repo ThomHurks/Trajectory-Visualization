@@ -15,7 +15,10 @@ function Segment(p1,p2)
         this.p2 = p1;
     }
 
-    this.d = p2.subtract(p1);
+    this.d;
+    this.updateD();
+
+    this.length = this.d.length();
 
     this.weight = null;
     this.pre = null;
@@ -23,6 +26,10 @@ function Segment(p1,p2)
     this.interval = null;
 
     return(this);
+}
+
+Segment.prototype.updateD = function() {
+    this.d = this.p2.subtract(this.p1);
 }
 
 //Returns null if the lines are collinear, or partially overlap.
@@ -53,6 +60,10 @@ Segment.prototype.getIntersection = function(l){//returns the intersection point
     return null ;
 };
 
+Segment.prototype.clone = function() {
+    return new Segment(this.p1.clone(), this.p2.clone());
+};
+
 //Returns the point on this line that lies at 100*t % from p1 to p2.
 Segment.prototype.getPointAt = function(t){
     return this.p1.add(this.d.scale(t));
@@ -72,9 +83,9 @@ Segment.prototype.projectOn = function(segment) {
     var s1 = new Segment(this.p1, this.p2);
     var s2 = new Segment(segment.p1, segment.p2);
 
-    console.log(s1.toString());
-    console.log(s2.toString());
-    console.log('-------');
+    //console.log(s1.toString());
+    //console.log(s2.toString());
+    //console.log('-------');
 
     // translate so s1.p1 is on origin
     s1.p2 = s1.p2.subtract(s1.p1);
@@ -83,9 +94,9 @@ Segment.prototype.projectOn = function(segment) {
     // must be done last
     s1.p1 = s1.p1.subtract(s1.p1);
 
-    console.log(s1.toString());
-    console.log(s2.toString());
-    console.log('-------');
+    //console.log(s1.toString());
+    //console.log(s2.toString());
+    //console.log('-------');
 
     var angle = Math.atan(s1.p2.y/s1.p2.x);
 
@@ -97,17 +108,30 @@ Segment.prototype.projectOn = function(segment) {
     s2.p1 = s2.p1.rotate(-angle);
     s2.p2 = s2.p2.rotate(-angle);
 
-    console.log(s1.toString());
-    console.log(s2.toString());
-    console.log('-------');
+    //console.log(s1.toString());
+    //console.log(s2.toString());
+    //console.log('-------');
 
-    // make sure s2 starts above x-axis
-    if (s2.p1.y < 0) {
-        s2.p1.y *= -1;
-        s2.p2.y *= -1;
+    var epsBox = new Rectangle(new Vector(s1.p1.x, -EPS), new Vector(s1.p2.x, -EPS), new Vector(s1.p2.x, EPS), new Vector(s1.p1.x, EPS));
+    var interval = epsBox.getSubLineInside(s2);
+
+    var result = {
+        segmentInterval: null,
+        baseInterval: null
+    };
+
+    if (interval.length > 0) {
+        s2.updateD();
+        var a = s2.getPointAt(interval[0]).x / s1.p2.x;
+        var b = s2.getPointAt(interval[1]).x / s1.p2.x;
+
+        result.segmentInterval = new Interval(interval[0], interval[1]);
+        result.baseInterval = new Interval(Math.min(a,b), Math.max(a,b));
     }
 
+    //console.log(result);
 
+    return result;
 }
 
 Segment.prototype.toString = function() {
