@@ -38,11 +38,11 @@ var DebugMenu = L.Control.extend({
                                 </div>\
                            </div>');
 
-        var epsilon = devMenu.select("#epsilon");
-        var epsilon_sim = devMenu.select("#epsilon_sim");
-        var alpha = devMenu.select("#alpha");
-        var equalize = devMenu.select("#equalize");
-        var recalculate = devMenu.select("#recalculate");
+        var epsilon = devMenu.select("#epsilon"),
+            epsilon_sim = devMenu.select("#epsilon_sim"),
+            alpha = devMenu.select("#alpha"),
+            equalize = devMenu.select("#equalize"),
+            recalculate = devMenu.select("#recalculate");
 
         epsilon.on("change", function () {
             var newVal = +this.value;
@@ -69,8 +69,7 @@ var DebugMenu = L.Control.extend({
         });
 
         equalize.on("change", function () {
-            var newVal = this.value;
-            console.log(this.value);
+            var newVal = this.checked;
             if (newVal) { // newVal is truthy
                 EQUALIZE = true;
             }
