@@ -17,13 +17,9 @@ function Segment(p1,p2)
 
     this.d;
     this.updateD();
-
     this.length = this.d.length();
 
-    this.weight = null;
-    this.pre = null;
-    this.suc = null;
-    this.interval = null;
+    this.intervalTree = new IntervalTree();
 
     return(this);
 }

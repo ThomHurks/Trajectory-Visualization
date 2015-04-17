@@ -4,8 +4,8 @@ function IntervalTree() {
 
 //add interval to tree and split the intervals accordingly and change the weights
 IntervalTree.prototype.addInterval = function(interval) {
-    var indexLeft = null;
-    var indexRight = null;
+    var indexLeft = -1;
+    var indexRight = this.intervals.length;
 
     for (var i = 0; i < this.intervals.length; i++) {
         var currentInterval = this.intervals[i];
@@ -22,25 +22,33 @@ IntervalTree.prototype.addInterval = function(interval) {
         this.intervals[i].weight++;
     }
 
+    console.log(interval);
+    console.log(indexLeft);
+    console.log(indexRight);
+
     var newInterval = null;
 
     //split left containing interval
-    var intervalLeft = this.intervals[indexLeft];
-    if (intervalLeft.end != interval.start) {
-        newInterval = new Interval(interval.start, intervalLeft.end, intervalLeft.weight + 1);
-        intervalLeft.end = interval.start;
+    if (indexLeft >= 0) {
+        var intervalLeft = this.intervals[indexLeft];
+        if (intervalLeft.end != interval.start) {
+            newInterval = new Interval(interval.start, intervalLeft.end, intervalLeft.weight + 1);
+            intervalLeft.end = interval.start;
 
-        this.intervals.splice(indexLeft + 1, 0, newInterval);
-        indexRight++;
+            this.intervals.splice(indexLeft + 1, 0, newInterval);
+            indexRight++;
+        }
     }
 
     //split right containing interval
-    var intervalRight = this.intervals[indexRight];
-    if (intervalRight.start != interval.end) {
-        newInterval = new Interval(intervalRight.start, interval.end, intervalLeft.weight + 1);
-        intervalRight.start = interval.end;
+    if (indexRight < this.intervals.length) {
+        var intervalRight = this.intervals[indexRight];
+        if (intervalRight.start != interval.end) {
+            newInterval = new Interval(intervalRight.start, interval.end, intervalLeft.weight + 1);
+            intervalRight.start = interval.end;
 
-        this.intervals.splice(indexRight + 1, 0, newInterval);
+            this.intervals.splice(indexRight + 1, 0, newInterval);
+        }
     }
 
 };
