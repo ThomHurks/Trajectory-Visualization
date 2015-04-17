@@ -5,7 +5,9 @@ function GeoData(path, done) {
     "use strict";
     var values = ['event-id', 'timestamp', 'location-lat', 'location-long', 'tag-local-identifier'],
         map = this,
-        dateTimeFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L");
+        dateTimeFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L"),
+        item,
+        r;
     map.path = path;
     map.line_separator = '\n';
     map.word_separator = ',';
@@ -15,14 +17,15 @@ function GeoData(path, done) {
     map.trajectories = {};
 
     function keep(valueNames) {
-        var keepMap = {};
-        var remove = [];
+        var keepMap = {},
+            remove = [],
+            k, r;
 
-        for (var k in valueNames) {
+        for (k in valueNames) {
             keepMap[valueNames[k]] = true;
         }
 
-        for (var k in map.value_names) {
+        for (k in map.value_names) {
             if (keepMap[map.value_names[k]] !== true) {
                 remove.push(map.value_names[k]);
             }
@@ -30,51 +33,53 @@ function GeoData(path, done) {
 
         map.value_names = valueNames;
 
-        for (var k in map.items) {
-            var item = map.items[k];
+        for (k in map.items) {
+            item = map.items[k];
 
-            for (var l in remove) {
-                delete item[remove[l]];
+            for (r in remove) {
+                delete item[remove[r]];
             }
         }
     }
 
-    $.get(map.path, function(csv) {
-        var lines = csv.split(map.line_separator);
+    $.get(map.path, function (csv) {
+        var lines = csv.split(map.line_separator),
+            i, k,
+            item,
+            words,
+            pass;
 
         map.value_names = lines[0].split(map.word_separator);
-        for (var i = 1; i < lines.length; i++) {
-            var item = {};
-            var words = lines[i].split(map.word_separator);
+        for (i = 1; i < lines.length; i++) {
+            item = {};
+            words = lines[i].split(map.word_separator);
 
-            for (var k in words) {
+            for (k in words) {
                 item[map.value_names[k]] = words[k];
             }
 
-            var pass = true;
-            for (var k in values) {
-                if (item[values[k]] == undefined || item[values[k]] == "") {
+            pass = true;
+            for (k in values) {
+                if (item[values[k]] === undefined || item[values[k]] === "") {
                     pass = false;
                     break;
                 }
             }
 
-            if (!pass) {
-                continue;
-            }
+            if (pass) {
+                map.items[item[map.id_field]] = item;
 
-            map.items[item[map.id_field]] = item;
+                if (map.trajectories[item['tag-local-identifier']] === undefined) {
+                    map.trajectories[item['tag-local-identifier']] = [];
+                }
 
-            if (map.trajectories[item['tag-local-identifier']] == undefined) {
-                map.trajectories[item['tag-local-identifier']] = [];
-            }
+                map.trajectories[item['tag-local-identifier']].push(item);
 
-            map.trajectories[item['tag-local-identifier']].push(item);
-
-            try {
-                item.timestamp = dateTimeFormat.parse(item.timestamp).getTime();
-            } catch(err) {
-                console.log(item);
+                try {
+                    item.timestamp = dateTimeFormat.parse(item.timestamp).getTime();
+                } catch (err) {
+                    console.log(item);
+                }
             }
         }
 
@@ -84,18 +89,21 @@ function GeoData(path, done) {
     });
 }
 
-GeoData.prototype.print = function() {
-    var map = this;
+GeoData.prototype.print = function () {
+    var map = this,
+        lines = [],
+        k, l, a,
+        item,
+        values;
 
-    var lines = [];
     lines.push(map.value_names.join(map.word_separator));
 
-    for (var k in map.items) {
-        var item = map.items[k];
+    for (k in map.items) {
+        item = map.items[k];
 
-        var values = [];
+        values = [];
 
-        for (var l in map.value_names) {
+        for (l in map.value_names) {
             values.push(item[map.value_names[l]]);
         }
 
@@ -103,6 +111,6 @@ GeoData.prototype.print = function() {
 
     }
 
-    var a = lines.join('\n');
+    a = lines.join('\n');
     console.log(a);
 }
