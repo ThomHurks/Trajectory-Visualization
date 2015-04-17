@@ -45,7 +45,10 @@ function runAlgorithm(segments) {
         }
     }
 
-    console.log(segments);
+    for (var k in segments) {
+
+    }
+
     return segments;
 }
 
