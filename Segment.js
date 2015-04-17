@@ -80,6 +80,7 @@ Segment.prototype.projectOn = function(segment) {
     s1.p2 = s1.p2.subtract(s1.p1);
     s2.p1 = s2.p1.subtract(s1.p1);
     s2.p2 = s2.p2.subtract(s1.p1);
+    // must be done last
     s1.p1 = s1.p1.subtract(s1.p1);
 
     console.log(s1.toString());
@@ -99,6 +100,14 @@ Segment.prototype.projectOn = function(segment) {
     console.log(s1.toString());
     console.log(s2.toString());
     console.log('-------');
+
+    // make sure s2 starts above x-axis
+    if (s2.p1.y < 0) {
+        s2.p1.y *= -1;
+        s2.p2.y *= -1;
+    }
+
+
 }
 
 Segment.prototype.toString = function() {
