@@ -117,13 +117,13 @@
            // Convert to GeoJSON.
            var geoJSON = new GeoJSON();
            geoJSON.addSegments(segments);
+           var firstCoord = geoJSON.features[0].geometry.coordinates[0];
 
            // Display it.
            var transform = d3.geo.transform({point: projectPoint}),
                    path = d3.geo.path().projection(transform);
 
            if (!map.restoreView()) {
-               var firstCoord = geoJSON.features[0].geometry.coordinates[0];
                map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
            }
 
@@ -140,7 +140,6 @@
                    .on('mouseover', tip.show)
                    .on('mouseout', tip.hide);
            updateSelection.exit().remove();
-           console.log("changed geometry");
 
            feature.call(tip);
 
@@ -181,8 +180,9 @@
 
                feature.attr('stroke-width', function(d) { return Math.sqrt(d.properties.edgeweight) * scale; })
                        .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight) * scale; });
-               console.log("reset");
            }
+
+           map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
 
            // Use Leaflet to implement a D3 geometric transformation.
            function projectPoint(x, y) {
