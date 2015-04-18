@@ -41,7 +41,7 @@
        ALPHA = Math.PI / 180 * 5; // 5 degrees.
        EQUALIZE = false; // Makes all segments < 2 * epsilon length by linear interpolation.
 
-       function CalculateTrajectories() {
+       function CalculateTrajectories(isInitialDraw) {
            var albatros = new GeoData('./data/albatros.csv', function () {
                console.log("Calculating with parameters EPS: " + EPS + " EPS_S " + EPS_S + " ALPHA " + ALPHA + " EQ " + EQUALIZE);
                var trajectories = preProcess(albatros, EPS_S, ALPHA, EQUALIZE);
@@ -54,10 +54,10 @@
                }
 
                segments = runAlgorithm(segments);
-               display(segments);
+               display(segments, isInitialDraw);
            });
        }
-       CalculateTrajectories();
+       CalculateTrajectories(true);
 
        var buttonsList = [{
            text: 'Print data to console',
@@ -112,7 +112,7 @@
                }
             });
 
-       function display(segments) {
+       function display(segments, isInitialDraw) {
 
            // Convert to GeoJSON.
            var geoJSON = new GeoJSON();
@@ -182,7 +182,11 @@
                        .style("stroke-width", function(d) { return Math.sqrt(d.properties.edgeweight) * scale; });
            }
 
-           map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), 5);
+           if (!isInitialDraw) {
+               // Unfortunate but necessary hack to force a refresh.
+               // The redraw() method does not have the same effect.
+               map.setView(new L.LatLng(firstCoord[1], firstCoord[0]), map.getZoom() - 1);
+           }
 
            // Use Leaflet to implement a D3 geometric transformation.
            function projectPoint(x, y) {

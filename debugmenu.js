@@ -81,7 +81,7 @@ var DebugMenu = L.Control.extend({
 
         recalculate.on("click", function () {
             console.log("Recalculate clicked");
-            CalculateTrajectories();
+            CalculateTrajectories(false);
         });
 
         return container;
